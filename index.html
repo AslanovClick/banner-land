@@ -3,1373 +3,614 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Gen Go — генератор рекламных креативов для гемблинга и беттинга</title>
-<meta name="description" content="Gen Go — ИИ-генератор рекламы для казино, слотов и спорт-беттинга. Сотни баннеров и ресайзов под любой оффер за минуты, а не недели." />
-<link rel="icon" type="image/svg+xml" href="logo-mark.svg" />
+<title>Gen Go — v4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet" />
 <style>
-/* =====================================================================
-   GEN GO — landing. Токены строго из дизайн-системы проекта (ADSPIRE):
-   лайм #c6ff3d (акцент 1), фиолет #7b5cff (акцент 2), циан #00e0ff (3),
-   сине-чёрные нейтрали, glow-свечения, фирменный slant -20deg.
-   ===================================================================== */
 :root{
-  /* Бренд-акценты */
-  --brand-lime:#c6ff3d;   --lime-300:#daff7c; --lime-400:#c6ff3d; --lime-500:#abe62b;
-  --lime-tint:rgba(198,255,61,.12); --lime-tint-strong:rgba(198,255,61,.2);
-  --brand-violet:#7b5cff; --violet-400:#9b85ff; --violet-500:#7b5cff; --violet-600:#5e3ef0;
-  --violet-tint:rgba(123,92,255,.14);
-  --brand-cyan:#00e0ff; --cyan-tint:rgba(0,224,255,.12);
-
-  /* Нейтрали — сине-чёрные, никогда чистый #000 */
-  --bg-void:#06070b; --bg-base:#0b0d12; --bg-surface:#12141a;
-  --bg-elevated:#1e2128; --bg-elevated-2:#262a33;
-  --border-subtle:rgba(255,255,255,.06); --border-default:rgba(255,255,255,.1);
-  --border-strong:rgba(255,255,255,.16);
-
-  /* Текст */
-  --text-primary:#f4f6f8; --text-secondary:#9aa3b2; --text-tertiary:#626a78;
-  --text-on-accent:#0b0d12;
-
-  /* Градиенты */
-  --grad-brand:linear-gradient(118deg,#c6ff3d 0%,#7b5cff 100%);
-  --grad-lime:linear-gradient(150deg,#daff7c 0%,#c6ff3d 55%,#abe62b 100%);
-  --grad-violet:linear-gradient(160deg,#9b85ff 0%,#5e3ef0 100%);
-  --grad-cyan-violet:linear-gradient(130deg,#00e0ff 0%,#7b5cff 100%);
-  --grad-surface:linear-gradient(180deg,#16181f 0%,#101218 100%);
-
-  /* Свечения / тени */
-  --glow-lime:0 0 24px rgba(198,255,61,.45); --glow-lime-lg:0 0 40px rgba(198,255,61,.55);
-  --glow-violet:0 0 32px rgba(123,92,255,.5); --glow-cyan:0 0 28px rgba(0,224,255,.45);
-  --shadow-card:0 8px 24px rgba(0,0,0,.45); --shadow-pop:0 16px 40px rgba(0,0,0,.55);
-
-  --slant:-20deg;
-  --font-head:"Unbounded","Manrope",system-ui,sans-serif;
-  --font-display:"Manrope",system-ui,sans-serif;
-  --font-body:"Manrope",system-ui,sans-serif;
-  --font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
-  --ease:cubic-bezier(.2,.8,.2,1);
-  --container:1200px;
+  --bg:#0d0f18; --surf:#12141a; --elev:#171a22; --graphite:#1c1f27;
+  --text:#f4f6f8; --t2:#9aa3b2; --t3:#626a78;
+  --lime:#c6ff3d; --lime-dim:rgba(198,255,61,.14); --lime-brd:rgba(198,255,61,.28);
+  --blue:#4a9eff;
+  --border:rgba(255,255,255,.08); --border2:rgba(255,255,255,.14);
+  --maxw:1680px; --gutter:clamp(20px,6vw,120px); --r:20px;
 }
-
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{
-  background-color:var(--bg-base);
-  background-image:
-    radial-gradient(60% 45% at 100% 0%,rgba(123,92,255,.1),transparent 60%),
-    radial-gradient(50% 40% at 0% 100%,rgba(198,255,61,.05),transparent 55%);
-  background-attachment:fixed;background-repeat:no-repeat;
-  color:var(--text-primary);font-family:var(--font-body);
-  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden;cursor:none}
 a{color:inherit;text-decoration:none}
-img,svg{display:block;max-width:100%}
-::selection{background:var(--lime-tint-strong);color:var(--text-primary)}
-
-/* Скроллбар */
-::-webkit-scrollbar{width:10px}
-::-webkit-scrollbar-track{background:var(--bg-void)}
-::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--text-tertiary) 85%,transparent);border-radius:6px}
-::-webkit-scrollbar-thumb:hover{background:color-mix(in srgb,var(--brand-lime) 60%,transparent)}
-
-/* ---------- Утилиты раскладки ---------- */
-.container{max-width:var(--container);margin:0 auto;padding:0 24px}
-.section{padding:120px 0;position:relative}
-.eyebrow{
-  display:inline-flex;align-items:center;gap:8px;
-  font-family:var(--font-display);font-size:13px;font-weight:600;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--brand-lime);
-  padding:7px 14px;border:1px solid var(--lime-tint-strong);border-radius:100px;
-  background:var(--lime-tint);
-}
-.section-head{max-width:720px;margin:0 auto 64px;text-align:center}
-.section-head.left{margin-left:0;text-align:left}
-h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;line-height:1.08;letter-spacing:-.02em}
-/* Технологичный дисплейный шрифт — только на крупных заголовках (кириллица OK) */
-.hero-center h1,.h2,.frow h3,.cta-final h2,.plan-price .amt,.metric-num,.section-head h2{font-family:var(--font-head);letter-spacing:-.035em;font-weight:700}
-.hero-center h1{font-weight:800}
-.h2{font-size:clamp(2rem,4.5vw,3.4rem);margin:22px 0 18px}
-.lead{font-size:clamp(1.05rem,1.6vw,1.28rem);color:var(--text-secondary);line-height:1.55}
-.text-grad{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.text-lime{color:var(--brand-lime)}
-
-/* ---------- Кнопки ---------- */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:9px;
-  font-family:var(--font-display);font-weight:600;font-size:15px;
-  padding:14px 26px;border-radius:12px;border:1px solid transparent;
-  cursor:pointer;transition:all .2s var(--ease);white-space:nowrap;
-}
-.btn svg{width:18px;height:18px}
-.btn-primary{background:var(--grad-lime);color:var(--text-on-accent);box-shadow:var(--glow-lime)}
-.btn-primary:hover{box-shadow:var(--glow-lime-lg);transform:translateY(-2px)}
-.btn-ghost{background:rgba(255,255,255,.04);color:var(--text-primary);border-color:var(--border-default)}
-.btn-ghost:hover{background:rgba(255,255,255,.08);border-color:var(--border-strong);transform:translateY(-2px)}
-.btn-lg{padding:17px 34px;font-size:16px;border-radius:14px}
-.btn-block{width:100%}
-
-/* ---------- Навигация ---------- */
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:all .3s var(--ease)}
-.nav-inner{
-  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;
-  padding:18px 0;
-}
-.nav-inner > a[aria-label]{justify-self:start}
-.nav.scrolled{background:rgba(11,13,18,.8);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-subtle)}
-.nav.scrolled .nav-inner{padding:12px 0}
-.nav-logo{height:30px;width:auto;flex-shrink:0}
-.nav-links{display:flex;align-items:center;gap:32px;justify-self:center}
-.nav-links a{font-size:14.5px;font-weight:500;color:var(--text-secondary);transition:color .2s}
-.nav-links a:hover{color:var(--text-primary)}
-.nav-cta{display:flex;align-items:center;gap:12px;justify-self:end}
-.nav-cta .btn{padding:10px 20px;font-size:14.5px;border-radius:100px}
-.nav-toggle{display:none;background:none;border:none;color:var(--text-primary);cursor:pointer}
-.nav-toggle svg{width:26px;height:26px}
-
-/* ---------- Аврора-фон ---------- */
-.aurora{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.aurora::before,.aurora::after{content:"";position:absolute;border-radius:50%;filter:blur(90px)}
-.aurora::before{width:620px;height:620px;top:-160px;right:-80px;background:radial-gradient(circle,rgba(123,92,255,.32),transparent 62%)}
-.aurora::after{width:560px;height:560px;bottom:-200px;left:-100px;background:radial-gradient(circle,rgba(198,255,61,.16),transparent 60%)}
-
-/* ---------- HERO ---------- */
-.hero{padding:170px 0 110px;position:relative;overflow:hidden}
-.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center;position:relative;z-index:2}
-.hero h1{font-size:clamp(2.6rem,5.6vw,4.6rem);font-weight:800}
-.hero .lead{margin:26px 0 36px;max-width:540px}
-.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
-.hero-note{margin-top:20px;font-size:14px;color:var(--text-tertiary);display:flex;align-items:center;gap:8px}
-.hero-note svg{width:16px;height:16px;color:var(--brand-lime)}
-
-/* Метрики под hero */
-.hero-metrics{display:flex;gap:40px;margin-top:52px;flex-wrap:wrap}
-.metric-num{font-family:var(--font-display);font-size:2.1rem;font-weight:800;line-height:1}
-.metric-lbl{font-size:13.5px;color:var(--text-secondary);margin-top:6px}
-
-/* Мокап генератора */
-.mockup{
-  position:relative;border-radius:24px;border:1px solid var(--border-default);
-  background:var(--grad-surface);box-shadow:var(--shadow-pop);overflow:hidden;
-}
-.mockup-bar{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--border-subtle);background:rgba(255,255,255,.02)}
-.dot{width:11px;height:11px;border-radius:50%}
-.mockup-bar .title{margin-left:4px;font-size:12.5px;color:var(--text-secondary);font-family:var(--font-display);font-weight:500}
-.mockup-bar .gen{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.03em;color:var(--brand-lime);background:var(--lime-tint);border:1px solid var(--lime-tint-strong);padding:5px 11px;border-radius:100px}
-.mockup-bar .gen i{width:7px;height:7px;border-radius:50%;background:var(--brand-lime);box-shadow:var(--glow-lime);animation:blink 1.4s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
-.mockup-body{padding:18px}
-
-/* Табы студии */
-.studio-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.stab{font-family:var(--font-display);font-size:11.5px;font-weight:600;padding:7px 15px;border-radius:100px;background:var(--bg-elevated);border:1px solid var(--border-subtle);color:var(--text-secondary)}
-.stab.active{background:var(--grad-lime);color:var(--text-on-accent);border-color:transparent;box-shadow:var(--glow-lime)}
-
-/* Bento-сетка ресайзов */
-/* Масонри-колонки: 5 разных форматов, каждый со своим соотношением сторон */
-.resize-grid{display:flex;justify-content:center;gap:14px;align-items:flex-start}
-.rcol{display:flex;flex-direction:column;gap:14px;flex:0 0 264px;min-width:0}
-.rcard{position:relative;border-radius:13px;overflow:hidden;border:1px solid var(--border-subtle);padding:13px;display:flex;flex-direction:column;justify-content:space-between;min-width:0;width:100%;transition:transform .25s var(--ease)}
-.rcard:hover{transform:translateY(-3px)}
-.rcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transform:scale(1.05);z-index:0;filter:brightness(1.12) saturate(1.1)}
-.rcard>*{position:relative;z-index:2}
-.rc-wide{aspect-ratio:16/9}
-.rc-feed{aspect-ratio:1/1}
-.rc-sport{aspect-ratio:4/5}
-.rc-banner{aspect-ratio:3/1}
-.rc-story{aspect-ratio:9/16}
-.rc-feed img{object-position:30% center}
-.rc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
-.rc-eyebrow{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--tc,#fff);padding:4px 10px 4px 8px;border-radius:100px;background:rgba(6,7,11,.6);backdrop-filter:blur(6px);border:1px solid color-mix(in srgb,var(--tc,#fff) 40%,transparent)}
-.rc-eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--tc,#fff);box-shadow:0 0 8px var(--tc,#fff);flex-shrink:0}
-.rc-badge{font-family:var(--font-display);font-size:9.5px;font-weight:700;color:var(--tc,var(--brand-lime));border:1px solid color-mix(in srgb,var(--tc,var(--brand-lime)) 45%,transparent);background:rgba(6,7,11,.6);backdrop-filter:blur(6px);padding:4px 9px;border-radius:100px;white-space:nowrap;flex-shrink:0}
-.rc-title{font-family:var(--font-display);font-weight:800;line-height:1.06;font-size:14px;text-shadow:0 2px 8px rgba(0,0,0,.7)}
-.rc-title b{color:var(--brand-lime);font-weight:800}
-.rc-story .rc-title{font-size:17px}
-.rc-feed .rc-title{font-size:15px}
-.rc-sport .rc-title{font-size:15px}
-.rc-banner .rc-title{font-size:15px}
-/* Цветные washi под формат (эхо Figma) */
-.rcard::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(6,7,11,.12) 0%,transparent 42%,transparent 55%,rgba(6,7,11,.82) 100%)}
-.t-lime::after,.t-violet::after,.t-cyan::after,.t-gold::after,.t-red::after{content:"";position:absolute;inset:0;z-index:1;mix-blend-mode:soft-light}
-.t-lime::after{background:linear-gradient(150deg,rgba(198,255,61,.4),transparent 60%)}
-.t-violet::after{background:linear-gradient(150deg,rgba(123,92,255,.45),transparent 62%)}
-.t-cyan::after{background:linear-gradient(150deg,rgba(0,224,255,.4),transparent 60%)}
-.t-gold::after{background:linear-gradient(150deg,rgba(255,176,32,.42),transparent 60%)}
-.t-red::after{background:linear-gradient(120deg,rgba(255,92,92,.42),transparent 62%)}
-.t-lime{--tc:#c6ff3d}
-.t-violet{--tc:#9b85ff}
-.t-cyan{--tc:#00e0ff}
-.t-gold{--tc:#ffcb52}
-.t-red{--tc:#ff8f8f}
-
-/* Прогресс генерации */
-.studio-progress{display:flex;align-items:center;gap:12px;margin-top:16px}
-.pbar{flex:1;height:7px;border-radius:100px;background:var(--bg-elevated);overflow:hidden}
-.pbar i{display:block;height:100%;width:82%;border-radius:100px;background:var(--grad-lime);box-shadow:var(--glow-lime);animation:pfill 2.2s var(--ease) both}
-@keyframes pfill{from{width:0}to{width:82%}}
-.ppct{font-family:var(--font-display);font-size:12px;font-weight:700;color:var(--text-secondary)}
-.mockup-glow{position:absolute;inset:-2px;border-radius:24px;background:var(--grad-brand);opacity:.5;filter:blur(30px);z-index:-1}
-
-/* ---------- Trust bar ---------- */
-.trust{border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle);padding:34px 0;background:rgba(255,255,255,.015)}
-.trust-inner{display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap}
-.trust-label{font-size:13px;color:var(--text-tertiary);font-family:var(--font-display);letter-spacing:.08em;text-transform:uppercase}
-.trust-logos{display:flex;gap:38px;flex-wrap:wrap;align-items:center}
-.trust-logos span{font-family:var(--font-display);font-weight:700;font-size:19px;color:var(--text-secondary);opacity:.7;letter-spacing:-.02em;transition:opacity .2s,color .2s}
-.trust-logos span:hover{opacity:1;color:var(--text-primary)}
-
-/* ---------- Карточки-сетки ---------- */
-.grid{display:grid;gap:22px}
-.g3{grid-template-columns:repeat(3,1fr)}
-.g2{grid-template-columns:repeat(2,1fr)}
-.card{
-  background:var(--grad-surface);border:1px solid var(--border-subtle);
-  border-radius:20px;padding:32px;transition:all .3s var(--ease);position:relative;overflow:hidden;
-  display:flex;flex-direction:column;
-}
-.card:hover{border-color:var(--border-strong);transform:translateY(-4px);box-shadow:var(--shadow-card)}
-.ctags{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto;padding-top:18px}
-.ctags span{font-family:var(--font-display);font-weight:500;font-size:11.5px;color:var(--text-tertiary);background:rgba(255,255,255,.04);border:1px solid var(--border-subtle);padding:4px 10px;border-radius:100px;white-space:nowrap}
-.card-ic{
-  width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;
-  margin-bottom:20px;background:var(--lime-tint);border:1px solid var(--lime-tint-strong);
-}
-.card-ic svg{width:26px;height:26px;color:var(--brand-lime)}
-.card-ic.violet{background:var(--violet-tint);border-color:rgba(123,92,255,.3)}
-.card-ic.violet svg{color:var(--violet-400)}
-.card-ic.cyan{background:var(--cyan-tint);border-color:rgba(0,224,255,.3)}
-.card-ic.cyan svg{color:var(--brand-cyan)}
-.card h3{font-size:1.28rem;margin-bottom:11px}
-.card p{color:var(--text-secondary);font-size:15px;line-height:1.6}
-
-/* ---------- Как это работает ---------- */
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;position:relative}
-.step{position:relative;padding-top:20px}
-.step-num{font-family:var(--font-display);font-size:15px;font-weight:800;color:var(--text-on-accent);width:40px;height:40px;border-radius:12px;background:var(--grad-lime);display:flex;align-items:center;justify-content:center;box-shadow:var(--glow-lime);margin-bottom:22px}
-.step h3{font-size:1.35rem;margin-bottom:12px}
-.step p{color:var(--text-secondary);font-size:15px}
-
-/* ---------- Форматы (галерея под нишу) ---------- */
-.formats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-.format{
-  position:relative;border-radius:20px;overflow:hidden;aspect-ratio:4/5;
-  border:1px solid var(--border-subtle);background:var(--grad-surface);
-  display:flex;flex-direction:column;justify-content:flex-end;
-  padding:26px;transition:all .3s var(--ease);
-}
-/* мягкое лаймовое свечение сверху — единый фирменный стиль */
-.format::before{content:"";position:absolute;top:-34%;left:-24%;width:80%;height:66%;
-  background:radial-gradient(circle,rgba(198,255,61,.28),transparent 68%);filter:blur(24px);opacity:.55;pointer-events:none;z-index:0;
-  transition:opacity .3s var(--ease)}
-/* крупный символ-«водяной знак» — отличает карточки, не меняя цвет */
-.format .ghost{position:absolute;top:-18px;right:-18px;opacity:.07;color:var(--brand-lime);
-  pointer-events:none;z-index:0;transform:rotate(-10deg)}
-.format .ghost svg{width:160px;height:160px}
-.format:hover{transform:translateY(-6px);border-color:var(--lime-tint-strong);box-shadow:0 0 42px rgba(198,255,61,.14)}
-.format:hover::before{opacity:.85}
-.format:hover .ghost{opacity:.1}
-.format>*{position:relative;z-index:2}
-.format .emoji{width:56px;height:56px;border-radius:15px;display:flex;align-items:center;justify-content:center;
-  margin-bottom:auto;background:var(--lime-tint);border:1px solid var(--lime-tint-strong)}
-.format .emoji svg{width:27px;height:27px;color:var(--brand-lime)}
-.format h4{font-size:1.2rem;margin-bottom:8px}
-.format p{font-size:13.5px;color:var(--text-secondary);line-height:1.55}
-
-/* ---------- Тарифы ---------- */
-.pricing-toggle{display:flex;align-items:center;justify-content:center;gap:16px;margin:0 auto 56px}
-.toggle-track{position:relative;display:inline-flex;background:var(--bg-elevated);border:1px solid var(--border-default);border-radius:100px;padding:5px}
-.toggle-track button{
-  position:relative;z-index:2;font-family:var(--font-display);font-size:14px;font-weight:600;
-  padding:10px 22px;border:none;background:none;color:var(--text-secondary);cursor:pointer;border-radius:100px;transition:color .25s;
-}
-.toggle-track button.active{color:var(--text-on-accent)}
-.toggle-thumb{position:absolute;top:5px;left:5px;height:calc(100% - 10px);border-radius:100px;background:var(--grad-lime);transition:transform .3s var(--ease),width .3s var(--ease);z-index:1;box-shadow:var(--glow-lime)}
-.save-badge{font-family:var(--font-display);font-size:12.5px;font-weight:700;color:var(--brand-lime);background:var(--lime-tint);border:1px solid var(--lime-tint-strong);padding:6px 12px;border-radius:100px}
-
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
-.plan{
-  background:var(--grad-surface);border:1px solid var(--border-subtle);border-radius:22px;
-  padding:34px 30px;display:flex;flex-direction:column;transition:all .3s var(--ease);position:relative;
-}
-.plan:hover{border-color:var(--border-strong);transform:translateY(-4px)}
-.plan.popular{border-color:transparent;background:linear-gradient(var(--bg-surface),var(--bg-surface)) padding-box,var(--grad-brand) border-box;border:1.5px solid transparent;box-shadow:0 0 50px rgba(123,92,255,.18);transform:scale(1.03)}
-.plan.popular:hover{transform:scale(1.03) translateY(-4px)}
-.plan-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.04em;padding:6px 16px;border-radius:100px;background:var(--grad-lime);color:var(--text-on-accent);box-shadow:var(--glow-lime);white-space:nowrap}
-.plan-name{font-family:var(--font-display);font-size:1.05rem;font-weight:700;letter-spacing:.02em}
-.plan-tag{color:var(--text-secondary);font-size:14px;margin:6px 0 24px;min-height:40px}
-.plan-price{display:flex;align-items:baseline;gap:6px}
-.plan-price .cur{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--text-secondary)}
-.plan-price .amt{font-family:var(--font-display);font-size:3.2rem;font-weight:800;line-height:1;letter-spacing:-.03em}
-.plan-price .per{color:var(--text-tertiary);font-size:14px}
-.plan-annual{font-size:13px;color:var(--text-tertiary);margin-top:8px;min-height:20px}
-.plan-credits{margin:24px 0;padding:16px;border-radius:14px;background:var(--bg-elevated);border:1px solid var(--border-subtle)}
-.plan-credits .big{font-family:var(--font-display);font-weight:700;font-size:1.05rem;color:var(--text-primary)}
-.plan-credits .sub{font-size:13px;color:var(--text-secondary);margin-top:4px}
-.plan-feats{list-style:none;margin:6px 0 28px;flex:1;display:flex;flex-direction:column;gap:13px}
-.plan-feats li{display:flex;gap:11px;font-size:14.5px;color:var(--text-secondary);align-items:flex-start}
-.plan-feats li svg{width:19px;height:19px;flex-shrink:0;margin-top:1px;color:var(--brand-lime)}
-.plan-feats li.off{color:var(--text-tertiary)}
-.plan-feats li.off svg{color:var(--text-tertiary)}
-
-/* Enterprise полоса */
-.enterprise{
-  margin-top:24px;background:var(--grad-surface);border:1px solid var(--border-subtle);
-  border-radius:22px;padding:38px 40px;display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap;position:relative;overflow:hidden;
-}
-.enterprise::before{content:"";position:absolute;top:-60%;right:-5%;width:340px;height:340px;background:radial-gradient(circle,rgba(123,92,255,.22),transparent 65%);filter:blur(30px)}
-.enterprise .ent-txt{position:relative;z-index:2;max-width:620px}
-.enterprise h3{font-size:1.6rem;margin-bottom:8px}
-.enterprise p{color:var(--text-secondary);font-size:15px}
-.enterprise .ent-cta{position:relative;z-index:2}
-
-/* ---------- Отзывы ---------- */
-/* Строка агрегатного рейтинга */
-.rating-strip{display:flex;align-items:center;justify-content:center;gap:18px;margin:-30px 0 46px;flex-wrap:wrap}
-.rating-strip .rnum{font-family:var(--font-head);font-weight:800;font-size:2rem;line-height:1;color:var(--text-primary)}
-.rating-strip .rstars{color:var(--brand-lime);font-size:19px;letter-spacing:3px}
-.rating-strip .rmeta{font-size:14px;color:var(--text-secondary)}
-.rating-strip .rmeta b{color:var(--text-primary);font-weight:700}
-.rating-strip .rdiv{width:1px;height:30px;background:var(--border-default)}
-
-.reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:start}
-.review{position:relative;background:var(--grad-surface);border:1px solid var(--border-subtle);border-radius:22px;padding:30px;overflow:hidden;transition:all .3s var(--ease)}
-.review::after{content:"\201C";position:absolute;top:2px;right:20px;font-family:Georgia,"Times New Roman",serif;font-size:110px;line-height:1;background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;opacity:.18;pointer-events:none}
-.review:hover{transform:translateY(-5px);border-color:var(--border-strong);box-shadow:var(--shadow-card)}
-.review.feat{border-color:transparent;background:linear-gradient(var(--bg-surface),var(--bg-surface)) padding-box,var(--grad-brand) border-box;border:1.5px solid transparent;box-shadow:0 0 46px rgba(123,92,255,.16)}
-.review .rtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px;position:relative;z-index:2}
-.review .metric{font-family:var(--font-display);font-size:12px;font-weight:700;color:var(--brand-lime);background:var(--lime-tint);border:1px solid var(--lime-tint-strong);padding:6px 12px;border-radius:100px;white-space:nowrap}
-.review .stars{color:var(--brand-lime);font-size:14px;letter-spacing:2px;flex-shrink:0}
-.review p{position:relative;z-index:2;font-size:15.5px;color:var(--text-primary);line-height:1.62;margin-bottom:24px}
-.review .who{display:flex;align-items:center;gap:13px;padding-top:20px;border-top:1px solid var(--border-subtle);position:relative;z-index:2}
-.review .ava-wrap{position:relative;flex-shrink:0;padding:2px;border-radius:50%;background:var(--grad-brand)}
-.review .ava{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--text-on-accent);border:2px solid var(--bg-surface)}
-.review .vf{position:absolute;right:-2px;bottom:-2px;width:18px;height:18px;border-radius:50%;background:var(--brand-lime);color:#0b0d12;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg-surface)}
-.review .vf svg{width:10px;height:10px}
-.review .who b{font-family:var(--font-display);font-size:15px;display:block;color:var(--text-primary)}
-.review .who span{font-size:13px;color:var(--text-tertiary)}
-
-/* ---------- FAQ ---------- */
-.faq-wrap{max-width:820px;margin:0 auto}
-.faq{border:1px solid var(--border-subtle);border-radius:16px;background:var(--grad-surface);margin-bottom:14px;overflow:hidden;transition:border-color .2s}
-.faq.open{border-color:var(--border-strong)}
-.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px 28px;background:none;border:none;color:var(--text-primary);font-family:var(--font-display);font-size:1.1rem;font-weight:600;text-align:left;cursor:pointer}
-.faq-q .chev{width:24px;height:24px;flex-shrink:0;color:var(--brand-lime);transition:transform .3s var(--ease)}
-.faq.open .chev{transform:rotate(45deg)}
-.faq-a{max-height:0;overflow:hidden;transition:max-height .35s var(--ease)}
-.faq-a p{padding:0 28px 26px;color:var(--text-secondary);font-size:15.5px;line-height:1.65}
-
-/* ---------- Финальный CTA ---------- */
-.cta-final{position:relative;overflow:hidden;border-radius:32px;padding:80px 40px;text-align:center;background:radial-gradient(120% 130% at 50% 0%,rgba(123,92,255,.22),transparent 55%),radial-gradient(90% 90% at 50% 120%,rgba(198,255,61,.14),transparent 55%),var(--bg-surface);border:1px solid var(--border-subtle)}
-.cta-final h2{font-size:clamp(2.1rem,4.5vw,3.4rem);max-width:760px;margin:0 auto 20px}
-.cta-final .lead{max-width:560px;margin:0 auto 36px}
-.cta-final .hero-cta{justify-content:center}
-
-/* ---------- Интеграции ---------- */
-.integrations{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;max-width:920px;margin:0 auto}
-.integ{
-  display:inline-flex;align-items:center;gap:11px;padding:14px 20px;border-radius:14px;
-  background:var(--grad-surface);border:1px solid var(--border-subtle);
-  font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--text-secondary);
-  transition:all .25s var(--ease);
-}
-.integ:hover{color:var(--text-primary);border-color:var(--border-strong);transform:translateY(-3px);box-shadow:var(--shadow-card)}
-.integ .ci{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--bg-elevated);border:1px solid var(--border-subtle);flex-shrink:0}
-.integ.lime .ci{background:var(--lime-tint);border-color:var(--lime-tint-strong)}
-.integ.violet .ci{background:var(--violet-tint);border-color:rgba(123,92,255,.3)}
-.integ.cyan .ci{background:var(--cyan-tint);border-color:rgba(0,224,255,.3)}
-.integ-note{text-align:center;margin-top:34px;font-size:14.5px;color:var(--text-tertiary)}
-
-/* ---------- Сравнение С / без Gen Go ---------- */
-.compare{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:940px;margin:0 auto}
-.comp-col{border-radius:22px;padding:34px 32px;border:1px solid var(--border-subtle);background:var(--grad-surface)}
-.comp-col.bad{background:linear-gradient(180deg,rgba(255,92,92,.05),rgba(16,18,24,.4))}
-.comp-col.good{border-color:transparent;background:linear-gradient(var(--bg-surface),var(--bg-surface)) padding-box,var(--grad-brand) border-box;border:1.5px solid transparent;box-shadow:0 0 50px rgba(123,92,255,.15)}
-.comp-head{display:flex;align-items:center;gap:12px;margin-bottom:26px;padding-bottom:22px;border-bottom:1px solid var(--border-subtle)}
-.comp-badge{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.comp-badge svg{width:24px;height:24px}
-.comp-badge.bad{background:var(--danger-tint,rgba(255,92,92,.14));color:#ff5c5c}
-.comp-badge.good{background:var(--grad-lime);color:var(--text-on-accent);box-shadow:var(--glow-lime)}
-.comp-head h3{font-size:1.3rem}
-.comp-head span{display:block;font-family:var(--font-body);font-weight:500;font-size:13.5px;color:var(--text-tertiary);letter-spacing:0}
-.comp-list{list-style:none;display:flex;flex-direction:column;gap:16px}
-.comp-list li{display:flex;gap:12px;font-size:15px;line-height:1.5;color:var(--text-secondary);align-items:flex-start}
-.comp-list li svg{width:20px;height:20px;flex-shrink:0;margin-top:1px}
-.comp-col.bad li svg{color:#ff5c5c;opacity:.8}
-.comp-col.good li{color:var(--text-primary)}
-.comp-col.good li svg{color:var(--brand-lime)}
-.comp-foot{margin-top:26px;padding-top:22px;border-top:1px solid var(--border-subtle);font-family:var(--font-display);font-weight:700;font-size:15px}
-.comp-col.bad .comp-foot{color:var(--text-tertiary)}
-.comp-col.good .comp-foot{color:var(--brand-lime)}
-@media(max-width:820px){.compare{grid-template-columns:1fr}}
-
-/* ---------- Футер ---------- */
-.footer{border-top:1px solid var(--border-subtle);padding:70px 0 40px;margin-top:40px}
-.footer-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;margin-bottom:54px}
-.footer-brand img{height:32px;margin-bottom:18px}
-.footer-brand p{color:var(--text-secondary);font-size:14.5px;max-width:300px;line-height:1.6}
-.footer-col h5{font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:18px}
-.footer-col a{display:block;color:var(--text-secondary);font-size:14.5px;margin-bottom:12px;transition:color .2s}
-.footer-col a:hover{color:var(--brand-lime)}
-.footer-bottom{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:30px;border-top:1px solid var(--border-subtle);flex-wrap:wrap}
-.footer-bottom p{font-size:13.5px;color:var(--text-tertiary)}
-.footer-social{display:flex;gap:12px}
-.footer-social a{width:38px;height:38px;border-radius:10px;border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;color:var(--text-secondary);transition:all .2s}
-.footer-social a:hover{color:var(--brand-lime);border-color:var(--lime-tint-strong);background:var(--lime-tint)}
-.footer-social svg{width:18px;height:18px}
-.age-badge{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-tertiary);border:1px solid var(--border-default);border-radius:100px;padding:5px 12px}
-.age-badge b{color:var(--danger,#ff5c5c);font-family:var(--font-display)}
-
-/* ================= РЕДИЗАЙН: hero-центр, промт, витрина ================= */
-.hero-center{max-width:900px;margin:0 auto;text-align:center;position:relative;z-index:2}
-.hero-center h1{font-size:clamp(2.8rem,6.2vw,5rem);font-weight:800;letter-spacing:-.03em;margin:24px auto 20px;max-width:16ch}
-.hero-center .lead{margin:0 auto 36px;max-width:620px}
-.hero-eyebrow-row{display:flex;justify-content:center}
-
-/* Промт-строка (AI-tool стиль) */
-.prompt-console{max-width:720px;margin:0 auto;position:relative}
-.prompt-bar{display:flex;align-items:center;gap:12px;padding:9px 9px 9px 20px;border-radius:16px;
-  background:var(--bg-elevated);border:1px solid var(--border-strong);box-shadow:0 0 0 4px rgba(198,255,61,.06),var(--shadow-pop)}
-.prompt-bar .spark{color:var(--brand-lime);flex-shrink:0}
-.prompt-bar .spark svg{width:20px;height:20px}
-.prompt-bar .ptext{flex:1;text-align:left;font-size:15.5px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prompt-bar .ptext .caret{display:inline-block;width:2px;height:17px;background:var(--brand-lime);margin-left:2px;vertical-align:-3px;animation:caret 1s step-end infinite}
-@keyframes caret{50%{opacity:0}}
-.prompt-bar .btn{flex-shrink:0}
-.prompt-chips{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:18px}
-.pchip{font-family:var(--font-display);font-size:13px;font-weight:600;color:var(--text-secondary);padding:8px 15px;border-radius:100px;background:rgba(255,255,255,.03);border:1px solid var(--border-subtle);transition:all .2s var(--ease);cursor:default}
-.pchip:hover{color:var(--text-primary);border-color:var(--border-strong)}
-.pchip b{color:var(--brand-lime);font-weight:700}
-.hero-sub{margin-top:22px;font-size:14px;color:var(--text-tertiary);display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap}
-.hero-sub svg{width:16px;height:16px;color:var(--brand-lime)}
-
-/* Полоса логотипов в hero */
-.hero-logos{margin-top:56px;text-align:center;position:relative;z-index:2}
-.hero-logos .lbl{font-family:var(--font-display);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:20px}
-.hero-logos .row{display:flex;gap:44px;flex-wrap:wrap;align-items:center;justify-content:center}
-.hero-logos .row span{font-family:var(--font-display);font-weight:700;font-size:19px;color:var(--text-secondary);opacity:.62;letter-spacing:-.02em;transition:opacity .2s,color .2s}
-.hero-logos .row span:hover{opacity:1;color:var(--text-primary)}
-
-/* Широкая витрина студии */
-.hero-showcase{max-width:1120px;margin:64px auto 0;position:relative;z-index:2}
-.hero-showcase .mockup{transform:none}
-.hero-showcase .resize-grid{grid-template-rows:150px 150px 118px;gap:14px}
-.hero-showcase .mockup-body{padding:22px}
-.hero-showcase .rc-title{font-size:19px}
-.hero-showcase .rc-story .rc-title{font-size:24px}
-.hero-showcase .rc-feed .rc-title,.hero-showcase .rc-slot .rc-title{font-size:17px}
-.hero-showcase .rc-sport .rc-title{font-size:22px}
-.hero-showcase .rc-eyebrow,.hero-showcase .rc-badge{font-size:11px}
-.hero-showcase .stab{font-size:13px;padding:9px 18px}
-.hero-showcase .mockup-bar{padding:16px 22px}
-.hero-showcase .mockup-bar .title{font-size:14px}
-
-/* ================= Чередующиеся фиче-ряды ================= */
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;margin-bottom:110px}
-.frow:last-child{margin-bottom:0}
-.frow.rev .ftext{order:2}
-.ftag{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-display);font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-lime);margin-bottom:18px}
-.ftag i{width:7px;height:7px;border-radius:50%;background:var(--brand-lime);box-shadow:var(--glow-lime)}
-.ftag.violet{color:var(--violet-400)}.ftag.violet i{background:var(--violet-500);box-shadow:var(--glow-violet)}
-.ftag.cyan{color:var(--brand-cyan)}.ftag.cyan i{background:var(--brand-cyan);box-shadow:var(--glow-cyan)}
-.frow h3{font-family:var(--font-display);font-size:clamp(1.7rem,3vw,2.5rem);font-weight:700;letter-spacing:-.02em;line-height:1.1;margin-bottom:18px}
-.frow h3 b{color:var(--brand-lime);font-weight:700}
-.frow .fdesc{color:var(--text-secondary);font-size:16.5px;line-height:1.6;margin-bottom:24px}
-.fbullets{list-style:none;display:flex;flex-direction:column;gap:13px}
-.fbullets li{display:flex;gap:11px;font-size:15.5px;color:var(--text-primary);align-items:flex-start}
-.fbullets li svg{width:20px;height:20px;flex-shrink:0;margin-top:1px;color:var(--brand-lime)}
-.fvisual{position:relative}
-.fvisual .halo{position:absolute;inset:-30px;z-index:0;background:radial-gradient(60% 60% at 50% 40%,rgba(123,92,255,.22),transparent 70%);filter:blur(30px)}
-.panel{position:relative;z-index:1;border-radius:20px;border:1px solid var(--border-default);background:var(--grad-surface);box-shadow:var(--shadow-pop);overflow:hidden}
-.panel-bar{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--border-subtle);background:rgba(255,255,255,.02)}
-.panel-bar .ttl{font-family:var(--font-display);font-size:12.5px;color:var(--text-secondary);font-weight:500}
-.panel-bar .st{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-family:var(--font-display);font-size:11px;font-weight:700;color:var(--brand-lime);background:var(--lime-tint);border:1px solid var(--lime-tint-strong);padding:5px 11px;border-radius:100px}
-.panel-bar .st i{width:7px;height:7px;border-radius:50%;background:var(--brand-lime);box-shadow:var(--glow-lime);animation:blink 1.4s ease-in-out infinite}
-
-/* Агент-консоль (лог генерации) */
-.console-body{padding:20px;font-family:var(--font-mono);font-size:13px;line-height:1.9}
-.cline{display:flex;gap:10px;align-items:flex-start;opacity:0;transform:translateY(6px);animation:cin .5s var(--ease) forwards}
-.cline:nth-child(1){animation-delay:.1s}.cline:nth-child(2){animation-delay:.5s}.cline:nth-child(3){animation-delay:.9s}.cline:nth-child(4){animation-delay:1.3s}.cline:nth-child(5){animation-delay:1.7s}.cline:nth-child(6){animation-delay:2.1s}
-@keyframes cin{to{opacity:1;transform:none}}
-.cline .mk{flex-shrink:0;font-weight:700}
-.cline .mk.arrow{color:var(--text-tertiary)}
-.cline .mk.ok{color:var(--brand-lime)}
-.cline .mk.run{color:var(--brand-cyan)}
-.cline .ct{color:var(--text-secondary)}
-.cline .ct b{color:var(--text-primary);font-weight:600}
-.cline .ct .hl{color:var(--brand-lime)}
-.console-thumbs{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:16px}
-.cthumb{aspect-ratio:1;border-radius:9px;overflow:hidden;border:1px solid var(--border-subtle);position:relative;opacity:0;animation:cin .4s var(--ease) forwards}
-.cthumb:nth-child(1){animation-delay:2.3s}.cthumb:nth-child(2){animation-delay:2.4s}.cthumb:nth-child(3){animation-delay:2.5s}.cthumb:nth-child(4){animation-delay:2.6s}.cthumb:nth-child(5){animation-delay:2.7s}.cthumb:nth-child(6){animation-delay:2.8s}
-.cthumb img{width:100%;height:100%;object-fit:cover;filter:brightness(1.1)}
-
-/* Локализация под ГЕО */
-.locale-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:20px}
-.lcard{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--border-subtle);aspect-ratio:16/10;display:flex;flex-direction:column;justify-content:space-between;padding:12px}
-.lcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(1.05);z-index:0}
-.lcard::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(6,7,11,.25),rgba(6,7,11,.82))}
-.lcard>*{position:relative;z-index:2}
-.lflag{align-self:flex-start;font-family:var(--font-display);font-size:11px;font-weight:700;background:rgba(6,7,11,.6);backdrop-filter:blur(6px);border:1px solid var(--border-default);padding:4px 9px;border-radius:100px}
-.lcta{font-family:var(--font-display);font-weight:800;font-size:14px;text-shadow:0 2px 8px rgba(0,0,0,.7)}
-.lcta b{color:var(--brand-lime)}
-
-/* Чек-панель модерации */
-.checks{padding:8px 4px}
-.check{display:flex;align-items:center;gap:14px;padding:15px 18px;border-bottom:1px solid var(--border-subtle)}
-.check:last-child{border-bottom:none}
-.check .ico{width:30px;height:30px;border-radius:9px;background:var(--lime-tint);border:1px solid var(--lime-tint-strong);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.check .ico svg{width:17px;height:17px;color:var(--brand-lime)}
-.check .txt{flex:1;font-size:14.5px;color:var(--text-primary)}
-.check .txt span{display:block;font-size:12.5px;color:var(--text-tertiary);margin-top:2px}
-.check .pass{font-family:var(--font-display);font-size:11px;font-weight:700;color:var(--brand-lime)}
-.checks-foot{display:flex;align-items:center;justify-content:space-between;padding:18px;margin-top:6px;border-top:1px solid var(--border-default);background:rgba(198,255,61,.04)}
-.checks-foot b{font-family:var(--font-display);color:var(--brand-lime);font-size:15px}
-.checks-foot .allbar{flex:1;max-width:160px;height:7px;border-radius:100px;background:var(--bg-elevated);overflow:hidden;margin-left:16px}
-.checks-foot .allbar i{display:block;height:100%;width:100%;background:var(--grad-lime);box-shadow:var(--glow-lime)}
-
-/* ================= Bento-грид возможностей ================= */
-.bento{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-.bento .bcard{background:var(--grad-surface);border:1px solid var(--border-subtle);border-radius:18px;padding:26px;transition:all .3s var(--ease)}
-.bento .bcard:hover{border-color:var(--border-strong);transform:translateY(-4px)}
-.bento .bcard.wide{grid-column:span 2}
-.bic{width:44px;height:44px;border-radius:12px;background:var(--lime-tint);border:1px solid var(--lime-tint-strong);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
-.bic svg{width:22px;height:22px;color:var(--brand-lime)}
-.bic.violet{background:var(--violet-tint);border-color:rgba(123,92,255,.3)}.bic.violet svg{color:var(--violet-400)}
-.bic.cyan{background:var(--cyan-tint);border-color:rgba(0,224,255,.3)}.bic.cyan svg{color:var(--brand-cyan)}
-.bcard h4{font-family:var(--font-display);font-size:1.12rem;margin-bottom:9px}
-.bcard p{color:var(--text-secondary);font-size:14px;line-height:1.55}
-
-@media(max-width:900px){
-  .frow{grid-template-columns:1fr;gap:32px;margin-bottom:72px}
-  .frow.rev .ftext{order:0}
-  .bento{grid-template-columns:1fr 1fr}
-  .bento .bcard.wide{grid-column:span 2}
-  .hero-showcase .resize-grid{grid-template-rows:110px 110px 92px}
-}
-@media(max-width:560px){
-  .prompt-bar{flex-wrap:wrap;padding:14px}
-  .prompt-bar .ptext{white-space:normal;flex:1 1 100%;margin-bottom:6px}
-  .prompt-bar .btn{width:100%}
-  .bento{grid-template-columns:1fr}
-  .bento .bcard.wide{grid-column:span 1}
-  .locale-grid{grid-template-columns:1fr}
-}
-
-/* ============ Экран 1: hero в стиле референса ============ */
-/* Лого-марка сверху с живым фиолетовым фрагментом */
-.hero-mark{display:flex;justify-content:center;margin-bottom:22px}
-.hero-mark svg{width:42px;height:38px;overflow:visible;filter:drop-shadow(0 4px 12px rgba(198,255,61,.22))}
-/* контурный знак: лаймовая часть статична, фиолетовый фрагмент покачивается на месте */
-.mk-violet{transform-box:fill-box;transform-origin:center;animation:mkwobble 3s ease-in-out infinite}
-.mk-violet path{filter:drop-shadow(0 0 6px rgba(123,92,255,.55))}
-@keyframes mkwobble{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
-@media(prefers-reduced-motion:reduce){.mk-violet{animation:none}}
-/* Тёмный eyebrow как в рефе */
-.hero-eyebrow{background:rgba(255,255,255,.04);border-color:var(--border-default);color:var(--text-secondary)}
-/* Компактный 2-строчный заголовок */
-.hero-center h1{font-size:clamp(2.1rem,4.6vw,3.7rem);line-height:1.12;margin:22px auto 18px;max-width:none}
-.h1-ic{display:inline-flex;align-items:center;justify-content:center;width:.92em;height:.92em;border-radius:.22em;background:linear-gradient(150deg,#241056,#7b5cff);box-shadow:var(--glow-violet);vertical-align:-.14em;padding:.1em}
-.h1-ic img{width:100%;height:100%}
-.hero-lead{margin:0 auto 34px;max-width:560px;font-size:clamp(1rem,1.4vw,1.16rem)}
-/* Кнопки-пилюли */
-.hero .hero-cta{justify-content:center}
-.hero .hero-cta .btn{border-radius:100px;padding:13px 26px}
-/* Мини-фичи: центрированные, с вертикальными разделителями */
-.hero-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:0;max-width:860px;margin:58px auto 0;padding-top:40px;border-top:1px solid var(--border-subtle);position:relative}
-.hero-mini::before{content:"";position:absolute;top:-1px;left:50%;transform:translateX(-50%);width:200px;height:2px;background:var(--grad-lime);box-shadow:var(--glow-lime)}
-.hmini{display:flex;flex-direction:column;align-items:center;text-align:center;padding:4px 26px}
-.hmini:not(:last-child){border-right:1px solid var(--border-subtle)}
-.hmini-ic{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;margin-bottom:15px}
-.hmini-ic svg{width:20px;height:20px;color:var(--brand-lime)}
-.hmini b{font-family:var(--font-display);font-size:15px;color:var(--text-primary);margin-bottom:6px}
-.hmini span{font-size:13.5px;color:var(--text-secondary);line-height:1.45;max-width:200px}
-
-/* ============ Экран 2: чертёжная сцена продукта ============ */
-.showcase{position:relative;overflow:hidden;padding:0 0 30px;margin-top:-30px;
-  background:
-    radial-gradient(80% 55% at 50% -8%,rgba(123,92,255,.26),transparent 60%),
-    radial-gradient(70% 55% at 50% 112%,rgba(198,255,61,.12),transparent 60%),
-    linear-gradient(180deg,#0d0f18 0%,#0b0d12 100%)}
-.bp{position:absolute;inset:0;z-index:0;pointer-events:none;
-  background-image:radial-gradient(circle,rgba(255,255,255,.075) 1.1px,transparent 1.1px);
-  background-size:28px 28px;
-  -webkit-mask-image:radial-gradient(78% 62% at 50% 42%,#000 38%,transparent 80%);
-  mask-image:radial-gradient(78% 62% at 50% 42%,#000 38%,transparent 80%)}
-.showcase-menubar{position:relative;z-index:3;border-bottom:1px solid var(--border-subtle);background:rgba(11,13,18,.45);backdrop-filter:blur(10px)}
-.mb-inner{display:flex;align-items:center;gap:28px;padding:11px 24px;font-family:var(--font-display);font-size:13px}
-.mb-brand{display:flex;align-items:center;gap:9px;font-weight:700;color:var(--text-primary)}
-.mb-dot{width:9px;height:9px;border-radius:3px;background:var(--grad-lime);box-shadow:var(--glow-lime);display:inline-block}
-.mb-menu{display:flex;gap:22px;color:var(--text-secondary)}
-.mb-menu span{transition:color .2s}.mb-menu span:hover{color:var(--text-primary)}
-.mb-date{margin-left:auto;color:var(--text-tertiary)}
-.showcase-stage{position:relative;z-index:2;padding-top:74px;display:flex;flex-direction:column;align-items:center}
-.float-badge{display:inline-flex;align-items:center;gap:9px;font-family:var(--font-display);font-size:14px;color:var(--text-primary);background:rgba(18,20,26,.88);backdrop-filter:blur(10px);border:1px solid var(--border-strong);border-radius:100px;padding:8px 16px 8px 8px;box-shadow:var(--shadow-pop);margin-bottom:-14px;position:relative;z-index:7}
-.float-badge b{color:var(--brand-lime);font-weight:700}
-.float-badge .ck{width:22px;height:22px;border-radius:50%;background:var(--brand-lime);color:#0b0d12;display:flex;align-items:center;justify-content:center;box-shadow:var(--glow-lime)}
-.float-badge .ck svg{width:12px;height:12px}
-.bp-frame{position:relative;width:100%;max-width:1080px}
-.bpc{position:absolute;width:16px;height:16px;border:2px solid rgba(198,255,61,.55);z-index:6}
-.bpc.tl{top:-11px;left:-11px;border-right:none;border-bottom:none}
-.bpc.tr{top:-11px;right:-11px;border-left:none;border-bottom:none}
-.bpc.bl{bottom:-11px;left:-11px;border-right:none;border-top:none}
-.bpc.br{bottom:-11px;right:-11px;border-left:none;border-top:none}
-/* Плата-«чертёж»: рамка, узлы, трассы */
-.bp-board{position:absolute;inset:0;z-index:1;pointer-events:none;border:1px solid rgba(198,255,61,.13);border-radius:26px;box-shadow:inset 0 0 90px rgba(123,92,255,.06)}
-.bpn{position:absolute;width:9px;height:9px;border-radius:2px;border:1.5px solid rgba(198,255,61,.5);background:rgba(11,13,18,.7);box-shadow:0 0 8px rgba(198,255,61,.25)}
-.bpn.m1,.bpn.m2{border-color:rgba(123,92,255,.65);box-shadow:0 0 8px rgba(123,92,255,.35)}
-.bpn.m3,.bpn.m4{border-color:rgba(0,224,255,.6);box-shadow:0 0 8px rgba(0,224,255,.35)}
-.bpn.c1{top:-5px;left:-5px}.bpn.c2{top:-5px;right:-5px}.bpn.c3{bottom:-5px;left:-5px}.bpn.c4{bottom:-5px;right:-5px}
-.bpn.m1{top:-5px;left:50%;margin-left:-4.5px}.bpn.m2{bottom:-5px;left:50%;margin-left:-4.5px}
-.bpn.m3{top:50%;left:-5px;margin-top:-4.5px}.bpn.m4{top:50%;right:-5px;margin-top:-4.5px}
-.bpn.c1::before,.bpn.c2::before,.bpn.c3::before,.bpn.c4::before{content:"";position:absolute;width:48px;height:1px;background:linear-gradient(90deg,rgba(198,255,61,.32),transparent)}
-.bpn.c1::after,.bpn.c2::after,.bpn.c3::after,.bpn.c4::after{content:"";position:absolute;width:1px;height:48px;background:linear-gradient(180deg,rgba(198,255,61,.32),transparent)}
-.bpn.c1::before{top:3px;left:9px}.bpn.c1::after{top:9px;left:3px}
-.bpn.c2::before{top:3px;right:9px;background:linear-gradient(270deg,rgba(198,255,61,.32),transparent)}.bpn.c2::after{top:9px;right:3px}
-.bpn.c3::before{bottom:3px;left:9px}.bpn.c3::after{bottom:9px;left:3px;background:linear-gradient(0deg,rgba(198,255,61,.32),transparent)}
-.bpn.c4::before{bottom:3px;right:9px;background:linear-gradient(270deg,rgba(198,255,61,.32),transparent)}.bpn.c4::after{bottom:9px;right:3px;background:linear-gradient(0deg,rgba(198,255,61,.32),transparent)}
-.bpt-top{position:absolute;top:-1.5px;left:14%;width:24%;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--brand-lime),transparent);box-shadow:0 0 12px rgba(198,255,61,.55)}
-/* Подсветка окна — «выбранный» блок */
-.showcase .bp-frame .mockup{box-shadow:var(--shadow-pop),0 0 0 1px rgba(198,255,61,.1),0 24px 70px rgba(123,92,255,.22)}
-/* крупнее карточки студии в витрине */
-.showcase .rcol{flex:0 0 300px}
-.showcase .mockup-body{padding:22px}
-.showcase .rc-title{font-size:16px}
-.showcase .rc-wide .rc-title{font-size:20px}
-.showcase .rc-story .rc-title{font-size:20px}
-.showcase .rc-feed .rc-title{font-size:18px}
-.showcase .rc-sport .rc-title{font-size:17px}
-.showcase .rc-banner .rc-title{font-size:17px}
-.showcase .rc-eyebrow,.showcase .rc-badge{font-size:10.5px}
-.showcase .stab{font-size:13px;padding:9px 18px}
-.showcase .mockup-bar{padding:16px 22px}
-.showcase .mockup-bar .title{font-size:14px}
-
-/* ============ Dock: экспорт и интеграции ============ */
-.dock-wrap{position:relative;z-index:2;margin-top:66px;display:flex;justify-content:center;align-items:flex-start;gap:8px}
-.dock{display:flex;gap:14px;padding:14px 18px;border-radius:22px;background:rgba(18,20,26,.72);backdrop-filter:blur(14px);border:1px solid var(--border-strong);box-shadow:var(--shadow-pop)}
-.dico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:19px;color:#fff;background:var(--c);border:1px solid rgba(255,255,255,.14);transition:transform .22s var(--ease);cursor:pointer}
-.dico:hover{transform:translateY(-9px) scale(1.06)}
-.ann{font-family:"Caveat",cursive;font-size:23px;font-weight:700;line-height:1.1;color:var(--brand-lime);position:relative;flex-shrink:0;margin-top:26px}
-.ann svg{width:52px;height:42px;color:var(--brand-lime);opacity:.85;position:absolute}
-.ann-l{text-align:right;margin-right:44px}
-.ann-l svg{right:-44px;top:20px}
-.ann-r{text-align:left;margin-left:44px}
-.ann-r svg{left:-44px;top:20px}
-
-@media(max-width:900px){
-  .hero-mini{grid-template-columns:1fr;gap:22px;max-width:360px}
-  .hmini{padding:0}
-  .hmini:not(:last-child){border-right:none}
-  .resize-grid{overflow-x:auto;justify-content:flex-start;padding-bottom:4px}
-  .rcol,.showcase .rcol{flex:0 0 200px}
-  .mb-menu{display:none}
-  .bp-board{display:none}
-  .ann{display:none}
-  .dock{gap:10px;padding:12px;overflow-x:auto;max-width:92vw}
-  .dico{width:46px;height:46px;font-size:17px}
-}
-
-/* Консоль/миниатюры анимируются только когда ряд появился */
-.cline,.cthumb{animation-play-state:paused}
-.frow.in .cline,.frow.in .cthumb{animation-play-state:running}
-
-/* ---------- Scroll reveal ---------- */
-.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+img{display:block;max-width:100%}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);background:var(--lime-dim);border:1px solid var(--lime-brd);padding:6px 14px;border-radius:100px}
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;font-weight:600;font-size:15px;cursor:none;padding:12px 22px;border-radius:12px;border:1px solid transparent;overflow:hidden;transition:transform .25s cubic-bezier(.2,.8,.3,1),box-shadow .25s,filter .25s,background .25s,border-color .25s;white-space:nowrap}
+/* блик, пробегающий по кнопке при наведении */
+.btn::before{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-18deg);transition:left .55s ease;pointer-events:none}
+.btn:hover::before{left:140%}
+.btn:active{transform:translateY(0) scale(.97)}
+.btn-primary{background:var(--lime);color:#0b0d12;border-color:var(--lime)}
+.btn-primary:hover{filter:brightness(1.06);transform:translateY(-3px);box-shadow:0 12px 30px rgba(198,255,61,.4),0 0 0 4px rgba(198,255,61,.12)}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--border2)}
+.btn-ghost:hover{background:rgba(198,255,61,.08);border-color:var(--lime);color:var(--lime);transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.35)}
+.btn-ghost::before{background:linear-gradient(100deg,transparent,rgba(198,255,61,.25),transparent)}
+.section{padding:88px 0}
+.section-head{max-width:none;margin:0 auto 56px;text-align:center}
+.section-head h2{font-size:clamp(30px,3.4vw,44px);font-weight:800;letter-spacing:-.02em;line-height:1.1;margin:18px 0 14px}
+.section-head p{color:var(--t2);font-size:17px;max-width:760px;margin-left:auto;margin-right:auto}
+/* display headings = Unbounded (как в Figma) */
+.hero h1,.section-head h2,.cta-final h2,.cta-mini h3,.cmp h3{font-family:'Unbounded',system-ui,sans-serif;font-weight:800;letter-spacing:-.01em}
+.hero h1{font-size:clamp(34px,4.3vw,55px);line-height:1.08}
+.section-head h2{font-size:clamp(24px,2.35vw,38px);white-space:nowrap}
+@media(max-width:1120px){.section-head h2{white-space:normal;font-size:clamp(24px,3.6vw,38px)}}
+.cmp h3{font-size:clamp(28px,3.2vw,42px)}
+.cta-final h2{font-size:clamp(26px,3vw,38px)}
+.cta-mini h3{font-size:clamp(22px,2.4vw,28px)}
+.reveal{opacity:0;transform:translateY(22px);transition:.7s cubic-bezier(.2,.7,.2,1)}
 .reveal.in{opacity:1;transform:none}
-.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}.reveal.d5{transition-delay:.4s}
 
-/* ---------- Адаптив ---------- */
-@media(max-width:1024px){
-  .hero-grid{grid-template-columns:1fr;gap:48px}
-  .hero-visual{max-width:520px}
-  .formats{grid-template-columns:repeat(2,1fr)}
-  .footer-grid{grid-template-columns:1fr 1fr}
-}
-@media(max-width:820px){
-  .section{padding:84px 0}
-  .hero{padding:130px 0 80px}
-  .nav-links{display:none}
-  .nav-toggle{display:block}
-  .nav-cta .btn-ghost{display:none}
-  .g3,.steps,.plans,.reviews{grid-template-columns:1fr}
-  .plan.popular{transform:none}
-  .plan.popular:hover{transform:translateY(-4px)}
-  .trust-inner{justify-content:center;text-align:center}
-  .hero-metrics{gap:28px}
-  .enterprise{flex-direction:column;align-items:flex-start;text-align:left}
-  /* Мобильное меню */
-  .nav-links.mobile-open{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;background:rgba(11,13,18,.97);backdrop-filter:blur(16px);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle);padding:10px 24px 20px}
-  .nav-links.mobile-open a{padding:14px 0;border-bottom:1px solid var(--border-subtle);width:100%}
-}
-@media(max-width:560px){
-  .footer-grid{grid-template-columns:1fr 1fr;gap:30px}
-  .footer-brand{grid-column:1/-1}
-  .mockup-grid{gap:8px}
-  .g2{grid-template-columns:1fr}
-  .cta-final{padding:56px 24px}
-  .hero-metrics{gap:22px}
-  .metric-num{font-size:1.7rem}
-}
+/* cursor */
+#cur,#curDot{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%;transform:translate(-50%,-50%)}
+#cur{width:34px;height:34px;border:1.5px solid rgba(198,255,61,.55);transition:width .2s,height .2s,background .2s,border-color .2s}
+#cur.big{width:60px;height:60px;background:rgba(198,255,61,.08);border-color:rgba(198,255,61,.7)}
+#curDot{width:6px;height:6px;background:var(--lime);box-shadow:0 0 12px rgba(198,255,61,.8)}
+@media(hover:none){body{cursor:auto}#cur,#curDot{display:none}}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(13,15,24,.6);border-bottom:1px solid rgba(255,255,255,.05)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}
+.nav-logo .dot{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,var(--lime),#7cc93a);box-shadow:0 0 18px rgba(198,255,61,.5);position:relative}
+.nav-logo .dot::after{content:"";position:absolute;inset:6px 7px;background:#0d0f18;border-radius:3px;clip-path:polygon(0 100%,60% 0,100% 0,40% 100%)}
+.logo-img{height:30px;width:auto;display:block}
+/* seam between hero and how */
+.seam{position:relative;height:4px;background:var(--lime);z-index:5}
+.seam-btn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;background:var(--bg);border:3px solid var(--lime);display:flex;align-items:center;justify-content:center;animation:seamPulse 2.1s ease-in-out infinite}
+@keyframes seamPulse{0%{box-shadow:0 0 0 0 rgba(198,255,61,.55)}70%{box-shadow:0 0 0 16px rgba(198,255,61,0)}100%{box-shadow:0 0 0 0 rgba(198,255,61,0)}}
+.seam-btn svg{animation:seamBob 1.7s ease-in-out infinite}
+@keyframes seamBob{0%,100%{transform:translateY(-2px)}50%{transform:translateY(2px)}}
+@media(prefers-reduced-motion:reduce){.seam-btn,.seam-btn svg{animation:none}}
+.nav-links{display:flex;gap:30px;font-size:15px;color:var(--t2)}
+.nav-links a:hover{color:var(--text)}
+.nav-actions{display:flex;gap:12px;align-items:center}
+.nav-actions .btn{padding:9px 18px}
+.nav-burger{display:none;background:none;border:0;color:var(--text);cursor:none;font-size:22px}
+@media(max-width:960px){.nav-links{display:none}.nav-actions .btn-ghost{display:none}.nav-burger{display:block}}
+
+/* HERO */
+.hero{position:relative;overflow:hidden;min-height:clamp(640px,88vh,920px);display:flex;align-items:center;background:#0d0f18}
+/* цельный фон hero из Figma (девушка + свечение за ней + Gen Go) */
+.hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0;pointer-events:none}
+/* затемнение слева под текст */
+.hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(11,13,20,.92) 0%,rgba(11,13,20,.6) 26%,rgba(11,13,20,.12) 46%,transparent 60%)}
+.hero .container{position:relative;z-index:2;width:100%}
+.hero-copy{max-width:620px}
+.hero h1{font-size:clamp(38px,5vw,66px);font-weight:800;line-height:1.04;letter-spacing:-.025em;margin:22px 0 18px}
+.hero h1 .hl{color:var(--lime)}
+.hero-lead{font-size:clamp(16px,1.3vw,19px);color:var(--t2);max-width:440px;margin-bottom:30px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+/* hero interface panel (gif slot) */
+.hero-panel{position:absolute;right:var(--gutter);top:188px;width:340px;z-index:2;background:rgba(18,20,26,.62);backdrop-filter:blur(12px);border:1px solid var(--border2);border-radius:18px;padding:14px}
+.hero-panel .ph-head{display:flex;align-items:center;justify-content:space-between;padding:2px 6px 12px}
+.hero-panel .ph-head span{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+.hero-panel .ph-dots{display:flex;gap:6px}
+.hero-panel .ph-dots i{width:9px;height:9px;border-radius:50%;background:#2a2e39}
+.gif-slot{position:relative;aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#14171f,#0e1017);border:1px solid var(--border)}
+.gif-slot img,.gif-slot video{width:100%;height:100%;object-fit:cover}
+.gif-slot .shimmer{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--t3);font-size:12px}
+.gif-slot .shimmer .ic{width:38px;height:38px;border-radius:10px;background:var(--lime-dim);border:1px solid var(--lime-brd);display:flex;align-items:center;justify-content:center;color:var(--lime)}
+.gif-slot::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(198,255,61,.06) 50%,transparent 70%);background-size:200% 100%;animation:sh 2.6s infinite}
+@keyframes sh{to{background-position:-200% 0}}
+@media(max-width:1180px){.hero-panel{display:none}}
+@media(max-width:860px){.hero{min-height:auto;padding:88px 0 76px}.hero-bg{object-position:64% center}.hero::before{background:linear-gradient(180deg,rgba(11,13,20,.9) 0%,rgba(11,13,20,.5) 42%,rgba(11,13,20,.86) 100%)}}
+
+/* HOW / STEPS */
+.how{position:relative;overflow:hidden;padding:88px 0}
+.how .container{position:relative;z-index:2}
+.steps-row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;max-width:1200px;margin:40px auto 0;gap:0}
+.step{display:flex;flex-direction:column;align-items:center;text-align:center;gap:20px;padding:8px 30px;transition:.3s;cursor:none}
+.step .pill{width:74px;height:58px;border-radius:18px;background:var(--elev);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--lime);transition:.3s}
+.step h4{font-size:21px;font-weight:600;transition:.3s}
+.step p{font-size:16px;color:var(--t2);max-width:290px;transition:.3s}
+.step-div{width:1px;height:124px;background:rgba(255,255,255,.1)}
+.steps-row:hover .step{opacity:.45}
+.steps-row .step:hover{opacity:1}
+.steps-row .step:hover .pill{background:var(--lime-dim);border-color:var(--lime-brd);transform:translateY(-4px);box-shadow:0 12px 30px rgba(198,255,61,.12)}
+@media(max-width:900px){.steps-row{grid-template-columns:1fr}.step-div{display:none}.steps-row:hover .step{opacity:1}}
+
+/* STUDIO */
+.studio{padding:70px 0}
+.studio-badge{display:flex;justify-content:center;margin-bottom:36px}
+.studio-badge>span{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);background:var(--lime-dim);border:1px solid var(--lime-brd);padding:6px 14px;border-radius:100px}
+.studio-badge .ok{width:18px;height:18px;border-radius:50%;background:var(--lime);color:#0b0d12;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.studio-badge .w{color:#fff}
+.studio-stage{position:relative;width:100%;max-width:1600px;margin:0 auto;aspect-ratio:1920/958}
+/* декор-слой в координатах Figma 1920×958, масштабируется под ширину сцены (позиции блоков 1:1 как в макете) */
+.decor{position:absolute;top:50%;left:50%;width:1920px;height:958px;transform-origin:center center;z-index:1}
+/* animated banner — centered, smooth continuous morph */
+.rb{position:absolute;left:50%;top:53.4%;transform:translate(-50%,-50%);transition:width .9s cubic-bezier(.45,.05,.3,1),height .9s cubic-bezier(.45,.05,.3,1);border-radius:18px;overflow:hidden;box-shadow:0 0 0 7px rgba(255,255,255,.2),0 30px 70px rgba(0,0,0,.5);z-index:3;container-type:inline-size}
+.rb-bg{position:absolute;inset:0;background:radial-gradient(130% 115% at 62% 36%,#a6e755,#7cc63a 46%,#4d8f26)}
+.rb-bg::after{content:"";position:absolute;left:16%;top:22%;width:66%;height:66%;border-radius:50%;background:rgba(215,255,155,.35);filter:blur(46px)}
+.rb .el{position:absolute;height:auto;max-width:none;transition:left .9s cubic-bezier(.45,.05,.3,1),top .9s cubic-bezier(.45,.05,.3,1),width .9s cubic-bezier(.45,.05,.3,1);will-change:left,top,width}
+.rb .trophy{z-index:1}.rb .dice-sm{z-index:2}.rb .chips{z-index:3}.rb .dice-lg{z-index:4}
+.rb-txt{position:absolute;z-index:5;width:520px;transform-origin:bottom left;transition:left .9s cubic-bezier(.45,.05,.3,1),bottom .9s cubic-bezier(.45,.05,.3,1),transform .9s cubic-bezier(.45,.05,.3,1)}
+.rb-txt .tc{display:inline-block;font-weight:800;color:#0b1004;font-size:33px;line-height:1;letter-spacing:.01em;white-space:nowrap;margin-bottom:16px;background:rgba(198,255,61,.34);padding:5px 13px;border-radius:8px}
+.rb-txt .tb{display:block;background:#0b0d12;color:#c6ff3d;font-weight:800;font-size:56px;line-height:1;padding:22px;border-radius:22px;text-align:center}
+.rb-lbl{position:absolute;z-index:10;top:15px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+.rb-lbl span{background:rgba(6,7,11,.6);color:#c6ff3d;font-weight:700;font-size:12px;padding:5px 12px;border-radius:100px;letter-spacing:.04em}
+/* decor fragments */
+.frag{position:absolute;background:var(--surf);border:1px solid var(--border);border-radius:16px;box-shadow:0 18px 40px rgba(0,0,0,.35);z-index:2}
+.frag.sidebar{left:440px;top:217px;width:64px;padding:14px 12px;border-radius:18px;background:#121419;border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;align-items:center;gap:6px}
+.frag.sidebar i{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9AA3B2}
+.frag.sidebar i svg{width:20px;height:20px;display:block}
+.frag.sidebar i.act{background:rgba(198,255,61,.14);color:#C6FF3D}
+.frag.brief{left:122px;top:451px;width:280px;padding:18px}
+.frag.brief .t{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;margin-bottom:4px}
+.frag.brief .t .ic{width:24px;height:24px;border-radius:7px;background:var(--lime-dim);border:1px solid var(--lime-brd)}
+.frag.brief small{color:var(--t3);font-size:11px;display:block;margin-left:34px}
+.frag.brief .in{margin-top:12px;background:var(--elev);border:1px solid var(--border);border-radius:10px;padding:12px;font-size:12px;color:var(--t3)}
+.frag.resizes{left:1427px;top:585px;width:300px;padding:18px}
+.frag.resizes .t{font-size:13px;font-weight:600}
+.frag.resizes small{color:var(--t3);font-size:11px}
+.frag.resizes .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.frag.resizes .chip{font-size:11.5px;font-weight:500;color:var(--t2);background:var(--elev);border:1px solid var(--border);padding:5px 10px;border-radius:100px;transition:.3s}
+.frag.resizes .chip.act{background:var(--lime);color:#0b0d12;border-color:var(--lime)}
+.frag.gen{left:1497px;top:370px;width:260px;padding:18px}
+.frag.gen .gbtn{background:var(--lime);color:#0b0d12;font-weight:600;font-size:14px;text-align:center;padding:12px;border-radius:12px;transition:transform .25s,box-shadow .25s,filter .25s}
+.frag.gen .gbtn:hover{transform:translateY(-2px);filter:brightness(1.06);box-shadow:0 10px 26px rgba(198,255,61,.4)}
+.frag.gen .st{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:12px;color:var(--t2)}
+.frag.gen .st i{width:18px;height:18px;border-radius:50%;background:var(--lime-dim);border:1px solid var(--lime-brd)}
+@media(max-width:1100px){.frag{display:none}.studio-stage{min-height:480px}}
+
+/* CTA mini */
+.cta-mini{padding:40px 0}
+.cta-bar{border-radius:24px;padding:26px 44px;display:flex;align-items:center;justify-content:space-between;gap:28px;background:linear-gradient(100deg,#bce46b,#a3cd54);position:relative;overflow:hidden;box-shadow:0 24px 60px rgba(150,210,70,.16)}
+.cta-bar::after{content:"";position:absolute;right:-60px;top:-80px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.28);filter:blur(60px);pointer-events:none}
+.cta-mini h3{font-size:clamp(19px,1.9vw,27px);font-weight:800;color:#0b1004;margin:0;position:relative;z-index:1;line-height:1.15}
+.cta-mini .btn{position:relative;z-index:1;background:#0b0d12;color:var(--lime);border-color:#0b0d12;padding:15px 32px;font-size:15px;flex-shrink:0}
+.cta-mini .btn:hover{background:#0b0d12;filter:brightness(1.15);transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.45)}
+@media(max-width:640px){.cta-bar{flex-direction:column;text-align:center;padding:28px 24px}}
+
+/* TOOLS bento */
+.bento{display:flex;flex-direction:column;gap:24px}
+.bento-row{display:grid;gap:24px}
+.bento-row.r1{grid-template-columns:1.56fr 1fr}
+.bento-row.r2{grid-template-columns:1fr 1fr 1fr}
+.tile{position:relative;background:var(--surf);border:1px solid var(--border);border-radius:24px;overflow:hidden;transition:.25s}
+.tile .glow{position:absolute;left:-70px;top:-90px;width:300px;height:300px;border-radius:50%;background:rgba(140,220,70,.13);filter:blur(85px);pointer-events:none}
+.tile .ic{width:52px;height:52px;border-radius:14px;background:var(--lime-dim);border:1px solid var(--lime-brd);display:flex;align-items:center;justify-content:center;color:var(--lime);margin-bottom:20px}
+.tile h3{font-size:26px;font-weight:700;margin-bottom:10px}
+.tile p{font-size:15px;color:var(--t2);line-height:1.55}
+.tile .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.tile .chips span{font-size:12px;color:var(--t2);background:rgba(255,255,255,.04);border:1px solid var(--border);padding:5px 12px;border-radius:100px}
+.open-tool{display:flex;align-items:center;justify-content:space-between;margin-top:20px}
+.open-tool b{color:var(--lime);font-size:14px;font-weight:600}
+.open-tool .arr{width:40px;height:40px;border-radius:50%;background:var(--lime);color:#0b0d12;display:flex;align-items:center;justify-content:center;transition:.25s}
+.tile-banner{display:grid;grid-template-columns:1fr 400px;position:relative}
+.tile-banner .content{padding:48px;display:flex;flex-direction:column;position:relative;z-index:1}
+.tile-banner .accent{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.tile-banner .accent .num{font-size:84px;font-weight:800;color:var(--lime);position:relative;z-index:1}
+.tile-banner .accent small{color:#9ec06a;font-weight:600;font-size:17px;position:relative;z-index:1}
+/* мягкое свечение без обрезки — растекается по всему тайлу */
+.tile-banner .accent .ag{position:absolute;width:560px;height:560px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(150,225,75,.34),rgba(150,225,75,.12) 46%,transparent 74%);filter:blur(50px);pointer-events:none}
+.tile-inner{padding:44px;display:flex;flex-direction:column;height:100%;position:relative;z-index:1}
+.tile .soon{position:absolute;top:22px;right:22px;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--lime);background:var(--lime-dim);border:1px solid var(--lime-brd);padding:3px 10px;border-radius:100px;z-index:2}
+.tile.soon-tile:hover{border-color:rgba(74,158,255,.55);transform:translateY(-4px);box-shadow:0 20px 44px rgba(74,158,255,.14)}
+.tile.soon-tile:hover .glow{background:rgba(74,158,255,.22)}
+.tile.soon-tile:hover .foot b{color:var(--blue)}
+.tile.soon-tile:hover .foot .arr{background:var(--blue);color:#0b0d12}
+/* активные инструменты (Баннер/Лендинг) — синий ховер (второй акцент, как у «Скоро») */
+.tile:not(.soon-tile):hover{border-color:rgba(74,158,255,.55);transform:translateY(-4px);box-shadow:0 24px 52px rgba(74,158,255,.16)}
+.tile:not(.soon-tile):hover .glow{background:rgba(74,158,255,.24)}
+.tile:not(.soon-tile):hover .open-tool b{color:var(--blue)}
+.tile:not(.soon-tile):hover .open-tool .arr{background:var(--blue);color:#0b0d12;transform:scale(1.1) rotate(3deg);box-shadow:0 8px 22px rgba(74,158,255,.4)}
+.open-tool b{transition:color .25s}
+.open-tool .arr{transition:transform .25s,box-shadow .25s,background .25s,color .25s}
+.tile .foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:22px}
+.tile .foot b{color:var(--t3);font-size:13px}
+.tile .foot .arr{width:40px;height:40px;border-radius:50%;background:var(--elev);border:1px solid var(--border);color:var(--t2);display:flex;align-items:center;justify-content:center;transition:.25s}
+@media(max-width:1080px){.bento-row.r1,.bento-row.r2{grid-template-columns:1fr}.tile-banner{grid-template-columns:1fr}.tile-banner .accent{min-height:220px;padding:30px}}
+
+/* COMPARISON */
+.compare{position:relative;overflow:hidden}
+.compare .cglow{position:absolute;width:640px;height:640px;border-radius:50%;filter:blur(160px);z-index:0;pointer-events:none}
+.compare .cglow.a{left:-10%;top:6%;background:rgba(86,140,255,.045)}
+.compare .cglow.b{right:-6%;top:8%;background:rgba(150,225,75,.13)}
+.compare .container{position:relative;z-index:1}
+.cmp-cards{display:grid;grid-template-columns:1fr 1fr;gap:28px;max-width:1680px;margin:0 auto}
+.cmp{background:var(--surf);border:1px solid var(--border);border-radius:30px;padding:52px;display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.2,.8,.3,1),border-color .3s,box-shadow .3s}
+.cmp:hover{transform:translateY(-8px) scale(1.012);border-color:rgba(150,180,255,.5);box-shadow:0 30px 60px rgba(0,0,0,.45),0 0 50px rgba(86,140,255,.22)}
+.cmp.pos:hover{transform:translateY(-8px) scale(1.012);border-color:var(--lime);box-shadow:0 30px 60px rgba(0,0,0,.45),0 0 66px rgba(198,255,61,.5)}
+.cmp.pos{border-color:var(--lime-brd)}
+.cmp h3{font-size:clamp(30px,3.5vw,46px);font-weight:800;line-height:1.05;margin-bottom:14px}
+.cmp .sub{font-size:15px;color:var(--t3);margin-bottom:34px}
+.cmp .list{display:flex;flex-direction:column;gap:22px;position:relative;padding-left:2px;margin-bottom:40px}
+.cmp .list::before{content:"";position:absolute;left:8px;top:12px;bottom:12px;width:2px;background:rgba(198,255,61,.35)}
+.cmp.pos .list::before{background:rgba(0,0,0,.25)}
+.cmp .li{display:flex;align-items:center;gap:22px;position:relative;z-index:1}
+.cmp .li .dot{width:16px;height:16px;border-radius:50%;background:var(--lime);flex-shrink:0}
+.cmp.pos{background:var(--lime);color:#0d1502}
+.cmp.pos .li .dot{background:#0d1502}
+.cmp .li b{font-size:22px;font-weight:800}
+.cmp .price{font-size:60px;font-weight:800;margin-top:auto}
+.cmp .price span{font-size:20px;font-weight:600;color:var(--t3)}
+.cmp.pos .price span{color:#33461a}
+@media(max-width:900px){.cmp-cards{grid-template-columns:1fr}}
+
+/* PRICING */
+.plans{display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;max-width:1256px;margin:0 auto;align-items:center}
+.plan{background:var(--graphite);border:1px solid var(--border);border-radius:26px;padding:36px;position:relative;display:flex;flex-direction:column}
+.plan.pop{background:#101609;border-color:var(--lime-brd);padding-top:48px;box-shadow:0 0 0 1px var(--lime-brd),0 30px 70px rgba(198,255,61,.07);align-self:stretch}
+.plan .badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);font-size:11.5px;font-weight:700;letter-spacing:.06em;color:#0b0d12;background:var(--lime);padding:6px 14px;border-radius:100px}
+.plan .pname{font-size:14px;font-weight:700;letter-spacing:.08em;color:var(--lime)}
+.plan .ptag{font-size:13.5px;color:var(--t3);margin:6px 0 18px}
+.plan .price{font-size:52px;font-weight:800;letter-spacing:-.02em}
+.plan .price .cur{font-size:26px}
+.plan .price .per{font-size:16px;font-weight:500;color:var(--t3)}
+.plan .credits{background:var(--elev);border:1px solid var(--border);border-radius:14px;padding:12px 16px;margin:18px 0}
+.plan .credits b{font-size:15.5px;display:block}
+.plan .credits small{color:var(--t3);font-size:12.5px}
+.plan ul{list-style:none;display:flex;flex-direction:column;gap:13px;margin:6px 0 24px}
+.plan li{font-size:14.5px;color:var(--text);display:flex;gap:11px;align-items:center}
+.plan li .ck{width:20px;height:20px;border-radius:50%;background:var(--lime-dim);border:1px solid var(--lime-brd);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.plan li.no{color:var(--t3)}
+.plan li.no .ck{background:rgba(255,255,255,.06);border-color:var(--border)}
+.plan .btn{width:100%;margin-top:auto;padding:14px}
+.plan .btn-out{background:var(--elev);border:1px solid var(--border2);color:var(--text)}
+.price-banner{width:100%;margin:44px auto 0;border-radius:24px;padding:32px 40px;display:flex;align-items:center;justify-content:space-between;gap:24px;background:linear-gradient(100deg,#bce46b,#a3cd54);position:relative;overflow:hidden}
+.price-banner h4{font-size:23px;font-weight:800;color:#141f06}
+.price-banner p{font-size:14.5px;color:#26330d}
+.price-banner .btn{background:#0d0f18;color:var(--lime);padding:14px 28px}
+@media(max-width:900px){.plans{grid-template-columns:1fr;max-width:440px}.price-banner{flex-direction:column;text-align:center}}
+
+/* REVIEWS marquee */
+.rev-mask{position:relative;overflow-x:auto;overflow-y:hidden;padding:36px 0;cursor:grab;user-select:none;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.rev-mask::-webkit-scrollbar{display:none}
+.rev-mask.grabbing{cursor:grabbing}
+.rev-track{display:flex;gap:24px;width:max-content}
+.rev-card{width:420px;flex-shrink:0;background:var(--surf);border:1px solid var(--border);border-radius:22px;padding:30px;display:flex;flex-direction:column;min-height:300px;transition:border-color .3s ease,box-shadow .3s ease,transform .3s cubic-bezier(.2,.8,.3,1)}
+.rev-card:hover{transform:translateY(-6px);border-color:rgba(198,255,61,.28);box-shadow:0 22px 44px rgba(0,0,0,.4)}
+.rev-card .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.rev-card .metric{font-size:11.5px;font-weight:600;color:var(--lime);background:var(--lime-dim);border:1px solid var(--lime-brd);padding:5px 11px;border-radius:100px}
+.rev-card .stars{color:var(--lime);font-size:15px;letter-spacing:1px}
+.rev-card .txt{font-size:15px;color:var(--text);line-height:1.55;flex:1}
+.rev-card .who{display:flex;align-items:center;gap:14px;margin-top:22px}
+.rev-card .av{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--lime),#8bcb3a);color:#0d1502;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center}
+.rev-card .who b{font-size:15px;display:block}
+.rev-card .who small{color:var(--t3);font-size:13px}
+
+/* FAQ */
+.faq{max-width:840px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.faq details{background:var(--surf);border:1px solid var(--border);border-radius:16px;padding:20px 28px;transition:.2s}
+.faq details[open]{border-color:var(--lime-brd)}
+.faq summary{font-size:18px;font-weight:600;cursor:none;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--lime);font-size:26px;line-height:1;font-weight:400}
+.faq details[open] summary::after{content:"–"}
+.faq p{color:var(--t2);font-size:15px;line-height:1.6;margin-top:14px}
+
+/* FINAL CTA */
+/* фон блока — цельная картинка из Figma (свечения + буквы); текст накладывается сверху */
+.cta-final{position:relative;max-width:1320px;margin:0 auto}
+.cta-final .cta-bg{display:block;width:100%;height:auto}
+.cta-final .cta-content{position:absolute;left:50%;top:15%;transform:translateX(-50%);width:100%;padding:0 40px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.cta-final .eyebrow{display:inline-flex;align-items:center;font-size:clamp(10px,.9vw,12px);font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--lime);background:rgba(198,255,61,.14);border:1px solid rgba(198,255,61,.28);padding:7px 16px;border-radius:100px;margin-bottom:clamp(10px,1.4vw,16px)}
+.cta-final h2{font-size:clamp(22px,3.4vw,46px);font-weight:800;letter-spacing:-.02em;margin:0}
+.cta-final p{color:rgba(255,255,255,.72);font-size:clamp(13px,1.3vw,16px);line-height:1.45;margin:clamp(6px,.7vw,9px) auto clamp(10px,1.2vw,15px);max-width:660px}
+.cta-final .cta-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.cta-final .btn-ghost{background:rgba(255,255,255,.05)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:52px 0 40px;margin-top:20px}
+.foot{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;color:var(--t3);font-size:14px}
+.foot a:hover{color:var(--text)}
+.foot-cols{display:flex;gap:60px;flex-wrap:wrap}
+.foot-cols div{display:flex;flex-direction:column;gap:10px}
 </style>
 </head>
 <body>
-<!-- ============ NAV ============ -->
-<nav class="nav" id="nav">
-  <div class="container nav-inner">
-    <a href="#top" aria-label="Gen Go"><img src="logo.svg" alt="Gen Go" class="nav-logo" /></a>
-    <div class="nav-links" id="navLinks">
-      <a href="#features">Возможности</a>
-      <a href="#how">Как это работает</a>
-      <a href="#formats">Форматы</a>
-      <a href="#pricing">Тарифы</a>
-      <a href="#faq">Вопросы</a>
-    </div>
-    <div class="nav-cta">
-      <a href="#pricing" class="btn btn-ghost">Войти</a>
-      <a href="#pricing" class="btn btn-primary">Начать бесплатно</a>
-      <button class="nav-toggle" id="navToggle" aria-label="Меню">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
-      </button>
-    </div>
-  </div>
-</nav>
+<div id="cur"></div><div id="curDot"></div>
 
+<!-- NAV -->
+<nav class="nav"><div class="container nav-inner">
+  <a href="#top" class="nav-logo"><img src="logo.svg" alt="Gen Go" class="logo-img"/></a>
+  <div class="nav-links"><a href="#tools">Возможности</a><a href="#how">Как это работает</a><a href="#studio">Форматы</a><a href="#pricing">Тарифы</a><a href="#faq">Вопросы</a></div>
+  <div class="nav-actions"><a class="btn btn-ghost" href="#">Войти</a><a class="btn btn-primary" href="#">Начать бесплатно</a><button class="nav-burger">☰</button></div>
+</div></nav>
 <span id="top"></span>
-<!-- ============ ЭКРАН 1: HERO ============ -->
-<header class="hero">
-  <div class="aurora"></div>
-  <div class="container">
-    <div class="hero-center reveal in">
-      <div class="hero-mark" aria-hidden="true">
-        <svg viewBox="40 0 104 94" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g class="mk-lime">
-            <path d="M107.368 3.05176e-05C110.581 3.05176e-05 112.351 3.73456 110.315 6.22134L86.1557 35.7396C85.4323 36.6234 84.3504 37.1359 83.2083 37.1359H52.7676C51.615 37.136 50.5243 37.658 49.8013 38.5557L38.5636 52.5098C37.5602 53.7557 38.4471 55.6087 40.0469 55.6087H69.5595C71.1674 55.6087 72.0517 57.4782 71.0317 58.7212L42.8971 93.0005C42.5353 93.4412 41.9951 93.6968 41.4249 93.6968H14.3868C12.7789 93.6968 11.8946 91.8272 12.9146 90.5843L33.439 65.5771C34.4591 64.3342 33.5749 62.4645 31.9669 62.4645H3.81586C0.616487 62.4644 -1.15722 58.7585 0.849528 56.2666L45.0194 1.41978C45.7424 0.522056 46.8331 5.08536e-05 47.9858 3.05176e-05H107.368Z" fill="none" stroke="var(--brand-lime)" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
-          </g>
-          <g class="mk-violet">
-            <path d="M91.4017 39.1807C92.0621 38.3694 93.0579 37.8976 94.1103 37.8976H132.489C135.412 37.8976 137.032 41.2517 135.197 43.5056L95.2301 92.6041C94.5697 93.4154 93.5739 93.8872 92.5215 93.8872H54.1429C51.2196 93.8872 49.5996 90.5331 51.4343 88.2792L91.4017 39.1807Z" fill="none" stroke="var(--violet-400)" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
-          </g>
-        </svg>
-      </div>
-      <div class="hero-eyebrow-row"><span class="eyebrow hero-eyebrow">⚡ ИИ-генератор для iGaming</span></div>
-      <h1>Креативы для <span class="text-grad">казино</span><br>и <span class="text-grad">беттинга</span> за <span class="h1-ic"><img src="logo-mark.svg" alt=""></span> минуты</h1>
-      <p class="lead hero-lead">Генерация, ресайзы и локализация рекламных креативов — на автопилоте.</p>
-      <div class="hero-cta">
-        <a href="#pricing" class="btn btn-primary">Начать бесплатно
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-        <a href="#showcase" class="btn btn-ghost">Смотреть демо</a>
-      </div>
 
-      <div class="hero-mini">
-        <div class="hmini">
-          <div class="hmini-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg></div>
-          <b>Опишите оффер</b>
-          <span>Промт словами, без брифов дизайнеру</span>
-        </div>
-        <div class="hmini">
-          <div class="hmini-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
-          <b>Получите пакет</b>
-          <span>Десятки креативов и ресайзов сразу</span>
-        </div>
-        <div class="hmini">
-          <div class="hmini-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
-          <b>Залейте сегодня</b>
-          <span>Готово к модерации и заливу</span>
-        </div>
-      </div>
+<!-- HERO -->
+<header class="hero">
+  <img class="hero-bg" src="assets/v4/hero-bg.webp" alt="" />
+  <div class="hero-panel">
+    <div class="ph-head"><span>Студия Gen Go</span><div class="ph-dots"><i></i><i></i><i></i></div></div>
+    <div class="gif-slot" id="gifSlot">
+      <!-- сюда подключим зацикленную гифку флоу интерфейса -->
+      <div class="shimmer"><div class="ic">▶</div>предпросмотр интерфейса</div>
     </div>
   </div>
+  <div class="container"><div class="hero-copy">
+    <span class="eyebrow">⚡ ИИ-генератор для iGaming</span>
+    <h1>Креативы для <span class="hl">казино и беттинга</span> за минуты</h1>
+    <p class="hero-lead">Генерация, ресайзы и локализация рекламных креативов — на автопилоте.</p>
+    <div class="hero-cta"><a class="btn btn-primary" href="#">Попробовать бесплатно</a><a class="btn btn-ghost" href="#how">Как это работает</a></div>
+  </div></div>
 </header>
 
-<!-- ============ ЭКРАН 2: ПРОДУКТ (чертёжный стиль) ============ -->
-<section class="showcase" id="showcase">
-  <div class="bp"></div>
-  <div class="showcase-menubar">
-    <div class="container mb-inner">
-      <span class="mb-brand"><i class="mb-dot"></i>Gen&nbsp;Go Studio</span>
-      <nav class="mb-menu"><span>Файл</span><span>Генерация</span><span>Ресайзы</span><span>Экспорт</span><span>Помощь</span></nav>
-      <span class="mb-date">пн, 5 авг · 15:09</span>
+<!-- seam separator (hero → how) -->
+<div class="seam"><span class="seam-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a9eff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></span></div>
+
+<!-- HOW / 3 STEPS -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="section-head reveal"><span class="eyebrow">Как это работает</span><h2>От оффера до пакета креативов — 3 шага</h2><p>Не нужно уметь дизайнить. Опишите оффер словами — Gen Go соберёт готовый к заливу креатив.</p></div>
+    <div class="steps-row reveal">
+      <div class="step"><div class="pill"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></div><h4>Опишите оффер</h4><p>Выберите вертикаль, бонус и настроение — или начните с готового пресета.</p></div>
+      <div class="step-div"></div>
+      <div class="step"><div class="pill"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.4 6.1L21 11l-6.6 1.9L12 19l-2.4-6.1L3 11l6.6-1.9L12 3z"/></svg></div><h4>Получите вариации</h4><p>Gen Go соберёт пакет креативов в разных стилях. Выбирайте лучшие.</p></div>
+      <div class="step-div"></div>
+      <div class="step"><div class="pill"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg></div><h4>Разложите на форматы</h4><p>Ресайз в один клик под все площадки и ГЕО. Скачивайте пакетом.</p></div>
     </div>
   </div>
+</section>
 
-  <div class="container showcase-stage reveal">
-    <div class="bp-board" aria-hidden="true">
-      <span class="bpn c1"></span><span class="bpn c2"></span><span class="bpn c3"></span><span class="bpn c4"></span>
-      <span class="bpn m1"></span><span class="bpn m2"></span><span class="bpn m3"></span><span class="bpn m4"></span>
-      <span class="bpt-top"></span>
+<!-- STUDIO -->
+<section class="studio" id="studio">
+  <div class="container">
+    <div class="studio-badge reveal"><span><span class="ok">✓</span><span class="lbl">65 ресайзов <span class="w">из одного клика</span></span></span></div>
+    <div class="studio-stage">
+      <div class="decor" id="decor">
+      <div class="frag sidebar">
+        <i><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.83" stroke-linecap="round" stroke-linejoin="round"><path d="M17.42 2.75H4.58A1.83 1.83 0 0 0 2.75 4.58v12.84A1.83 1.83 0 0 0 4.58 19.25h12.84a1.83 1.83 0 0 0 1.83-1.83V4.58a1.83 1.83 0 0 0-1.83-1.83Z"/><path d="M8.25 2.75v16.5"/></svg></i>
+        <i><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.83" stroke-linecap="round" stroke-linejoin="round"><path d="M2.75 9.63 11 2.75l8.25 6.88"/><path d="M4.58 8.71V19.25h12.84V8.71"/></svg></i>
+        <i class="act"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.83" stroke-linecap="round" stroke-linejoin="round"><path d="M17.42 2.75H4.58A1.83 1.83 0 0 0 2.75 4.58v12.84A1.83 1.83 0 0 0 4.58 19.25h12.84a1.83 1.83 0 0 0 1.83-1.83V4.58a1.83 1.83 0 0 0-1.83-1.83Z"/><path d="M7.79 9.17a1.38 1.38 0 1 0 0-2.75 1.38 1.38 0 0 0 0 2.75Z"/><path d="m19.25 13.75-4.58-4.58L4.58 19.25"/></svg></i>
+        <i><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.83" stroke-linecap="round" stroke-linejoin="round"><path d="M8.25 2.75H3.67a.92.92 0 0 0-.92.92v4.58a.92.92 0 0 0 .92.92h4.58a.92.92 0 0 0 .92-.92V3.67a.92.92 0 0 0-.92-.92Z"/><path d="M18.33 2.75h-4.58a.92.92 0 0 0-.92.92v4.58a.92.92 0 0 0 .92.92h4.58a.92.92 0 0 0 .92-.92V3.67a.92.92 0 0 0-.92-.92Z"/><path d="M8.25 12.83H3.67a.92.92 0 0 0-.92.92v4.58a.92.92 0 0 0 .92.92h4.58a.92.92 0 0 0 .92-.92v-4.58a.92.92 0 0 0-.92-.92Z"/><path d="M18.33 12.83h-4.58a.92.92 0 0 0-.92.92v4.58a.92.92 0 0 0 .92.92h4.58a.92.92 0 0 0 .92-.92v-4.58a.92.92 0 0 0-.92-.92Z"/></svg></i>
+        <i><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.83" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 6.42h-11a3.67 3.67 0 0 0-3.67 3.66v2.75a3.67 3.67 0 0 0 3.67 3.67h11a3.67 3.67 0 0 0 3.67-3.67v-2.75a3.67 3.67 0 0 0-3.67-3.66Z"/><path d="M6.42 10.08v2.75M5.04 11.46h2.75"/><path d="M14.67 11.46a.92.92 0 1 0 0-1.83.92.92 0 0 0 0 1.83Z"/><path d="M16.96 13.29a.92.92 0 1 0 0-1.83.92.92 0 0 0 0 1.83Z"/></svg></i>
+        <i><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.83" stroke-linecap="round" stroke-linejoin="round"><path d="M17.42 3.67H4.58A1.83 1.83 0 0 0 2.75 5.5v11a1.83 1.83 0 0 0 1.83 1.83h12.84A1.83 1.83 0 0 0 19.25 16.5v-11a1.83 1.83 0 0 0-1.83-1.83Z"/><path d="M6.42 3.67v14.66M15.58 3.67v14.66M2.75 8.25h3.67M2.75 13.75h3.67M15.58 8.25h3.67M15.58 13.75h3.67"/></svg></i>
+        <i><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.83" stroke-linecap="round" stroke-linejoin="round"><path d="M17.42 4.58H4.58A1.83 1.83 0 0 0 2.75 6.42v9.16A1.83 1.83 0 0 0 4.58 17.42h12.84a1.83 1.83 0 0 0 1.83-1.84V6.42a1.83 1.83 0 0 0-1.83-1.84Z"/><path d="m3.21 6.42 7.79 5.5 7.79-5.5"/></svg></i>
+        <i><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.83" stroke-linecap="round" stroke-linejoin="round"><path d="M20.17 1.83 10.08 11.92m0 0L1.83 8.25 20.17 1.83l-6.42 18.34-3.67-8.25Z"/></svg></i>
+        <i><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.83" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19.25a8.25 8.25 0 1 0 0-16.5 8.25 8.25 0 0 0 0 16.5Z"/><path d="M11 6.42V11l2.75 1.83"/></svg></i>
+      </div>
+      <div class="frag brief"><div class="t"><span class="ic"></span>Загрузить ТЗ</div><small>ИИ прочитает бриф</small><div class="in">Новинка, акция, скидка, спецпредложение…</div></div>
+      <div class="frag resizes"><div class="t">Выбор ресайзов</div><small>Отметьте нужные форматы</small><div class="chips" id="chips"><span class="chip" data-r="1x1">1:1</span><span class="chip" data-r="4x5">4:5</span><span class="chip" data-r="9x16">9:16</span><span class="chip" data-r="16x9">16:9</span><span class="chip" data-r="3x1">3:1</span></div></div>
+      <div class="frag gen"><div class="gbtn">Сгенерировать · 30</div><div class="st"><i></i>Готово · синхронизировано</div></div>
+      </div><!-- /decor -->
+      <div class="rb" id="rb">
+        <div class="rb-bg"></div>
+        <img class="el trophy"  src="assets/v4/el-trophy.webp"  alt="" />
+        <img class="el dice-sm" src="assets/v4/el-dice-sm.png"  alt="" />
+        <img class="el chips"   src="assets/v4/el-chips.webp"   alt="" />
+        <img class="el dice-lg" src="assets/v4/el-dice-lg.webp" alt="" />
+        <div class="rb-txt"><div class="tc">TAKE YOUR CHANCE</div><div class="tb">TRY NOW</div></div>
+        <div class="rb-lbl"><span class="tag" id="rbTag">● POST</span><span id="rbFmt">1:1</span></div>
+      </div>
     </div>
-    <span class="float-badge"><i class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></i><b>5 ресайзов</b> из одного клика</span>
-    <div class="bp-frame">
-      <span class="bpc tl"></span><span class="bpc tr"></span><span class="bpc bl"></span><span class="bpc br"></span>
-      <div class="mockup">
-        <div class="mockup-glow"></div>
-        <div class="mockup-bar">
-          <span class="dot" style="background:#ff5c5c"></span>
-          <span class="dot" style="background:#ffb020"></span>
-          <span class="dot" style="background:#c6ff3d"></span>
-          <span class="title">gengo · casino welcome</span>
-          <span class="gen"><i></i>generating</span>
-        </div>
-        <div class="mockup-body">
-          <div class="studio-tabs">
-            <span class="stab active">Баннеры</span>
-            <span class="stab">Лендинги</span>
-            <span class="stab">Playable</span>
-            <span class="stab">Видео</span>
+  </div>
+</section>
+
+<!-- CTA mini -->
+<section class="cta-mini reveal"><div class="container"><div class="cta-bar"><h3>Соберите первый пакет креативов уже за вечер</h3><a class="btn" href="#">Начать бесплатно</a></div></div></section>
+
+<!-- TOOLS bento -->
+<section class="section" id="tools">
+  <div class="container">
+    <div class="section-head reveal"><span class="eyebrow">Инструменты</span><h2>Пять инструментов. Одна студия.</h2><p>От статичного баннера до писем и playable-механик — весь рекламный стек iGaming в одной студии.</p></div>
+    <div class="bento">
+      <div class="bento-row r1">
+        <div class="tile tile-banner reveal">
+          <div class="glow"></div>
+          <div class="content">
+            <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+            <h3>Баннер-генератор</h3><p>Статичные баннеры для соцсетей, ставок и рекламы — мастер-баннер и целый пакет ресайзов под каждый канал.</p>
+            <div class="chips"><span>65+ форматов</span><span>10 аспектов</span><span>ZIP-экспорт</span></div>
+            <div class="open-tool"><b>Открыть инструмент</b><span class="arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
           </div>
-          <div class="resize-grid">
-            <div class="rcol">
-              <div class="rcard rc-wide t-lime">
-                <img src="assets/master.png" alt="Ресайз 16:9" loading="lazy">
-                <div class="rc-top"><span class="rc-eyebrow">Wide angle</span><span class="rc-badge">16:9</span></div>
-                <div class="rc-title">100% <b>WELCOME</b> BONUS</div>
-              </div>
-              <div class="rcard rc-feed t-cyan">
-                <img src="assets/master.png" alt="Ресайз 1:1" loading="lazy">
-                <div class="rc-top"><span class="rc-eyebrow">Feed</span><span class="rc-badge">1:1</span></div>
-                <div class="rc-title"><b>PLAY</b> NOW</div>
-              </div>
-            </div>
-            <div class="rcol">
-              <div class="rcard rc-sport t-red">
-                <img src="assets/master.png" alt="Ресайз 4:5" loading="lazy">
-                <div class="rc-top"><span class="rc-eyebrow">Sport</span><span class="rc-badge">4:5</span></div>
-                <div class="rc-title">BET &amp; <b>WIN</b> LIVE</div>
-              </div>
-              <div class="rcard rc-banner t-gold">
-                <img src="assets/master.png" alt="Ресайз 3:1" loading="lazy">
-                <div class="rc-top"><span class="rc-eyebrow">Banner</span><span class="rc-badge">3:1</span></div>
-                <div class="rc-title"><b>MEGA</b> SPIN</div>
-              </div>
-            </div>
-            <div class="rcol">
-              <div class="rcard rc-story t-violet">
-                <img src="assets/master.png" alt="Ресайз 9:16" loading="lazy">
-                <div class="rc-top"><span class="rc-eyebrow">Story</span><span class="rc-badge">9:16</span></div>
-                <div class="rc-title">BIG WINS<br>BIGGER <b>THRILLS</b></div>
-              </div>
-            </div>
-          </div>
-          <div class="studio-progress">
-            <span class="pbar"><i></i></span>
-            <span class="ppct">82%</span>
-          </div>
+          <div class="accent"><div class="ag"></div><div class="num">65+</div><small>готовых форматов</small></div>
         </div>
+        <div class="tile reveal"><div class="glow"></div><div class="tile-inner">
+          <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+          <h3>Лендинг-генератор</h3><p>Лендинги на основе баннера или с нуля — готовые вертикали, редактор текста, стилей и языков.</p>
+          <div class="chips"><span>из баннера</span><span>с нуля</span><span>мультиязычность</span></div>
+          <div class="open-tool"><b>Открыть инструмент</b><span class="arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+        </div></div>
+      </div>
+      <div class="bento-row r2">
+        <div class="tile soon-tile reveal"><div class="glow"></div><span class="soon">Скоро</span><div class="tile-inner">
+          <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="16" cy="11" r="1"/><circle cx="18.5" cy="13.5" r="1"/></svg></div>
+          <h3>Плейбл-реклама</h3><p>Интерактивные игровые баннеры под рекламные сети — механики, которые вовлекают ещё до клика.</p>
+          <div class="foot"><b>Скоро в студии</b><span class="arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+        </div></div>
+        <div class="tile soon-tile reveal"><div class="glow"></div><span class="soon">Скоро</span><div class="tile-inner">
+          <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="14" height="14" rx="2"/><path d="m16 9 6-3v12l-6-3"/></svg></div>
+          <h3>Конструктор видео</h3><p>Скринкасты, персонажи, липсинк и музыка — короткие видеокреативы под Stories и Reels.</p>
+          <div class="foot"><b>Скоро в студии</b><span class="arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+        </div></div>
+        <div class="tile soon-tile reveal"><div class="glow"></div><span class="soon">Скоро</span><div class="tile-inner">
+          <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7.5 8.5 6 8.5-6"/></svg></div>
+          <h3>Генератор писем</h3><p>Письма для email-рассылок с живым предпросмотром и готовыми блоками под оффер.</p>
+          <div class="foot"><b>Скоро в студии</b><span class="arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+        </div></div>
       </div>
     </div>
   </div>
-
-  <!-- Dock: экспорт и интеграции -->
-  <div class="container dock-wrap reveal">
-    <span class="ann ann-l">Экспорт в кабинеты<br>и трекеры
-      <svg viewBox="0 0 60 50" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6c10 22 26 34 46 36"/><path d="M42 44l10-2M52 42l-3-9"/></svg>
-    </span>
-    <div class="dock">
-      <span class="dico" style="--c:#1877f2" title="Facebook Ads">f</span>
-      <span class="dico" style="--c:#ea4335" title="Google Ads">G</span>
-      <span class="dico" style="--c:#000" title="TikTok Ads">♪</span>
-      <span class="dico" style="--c:#2aabee" title="Telegram">✈</span>
-      <span class="dico" style="--c:#ff9500" title="Push-сети">🔔</span>
-      <span class="dico" style="--c:#7b5cff" title="In-App">▤</span>
-      <span class="dico" style="--c:#c6ff3d;color:#0b0d12" title="Keitaro">K</span>
-      <span class="dico" style="--c:#00e0ff;color:#0b0d12" title="Binom">B</span>
-      <span class="dico" style="--c:#262a33" title="API">&lt;/&gt;</span>
-    </div>
-    <span class="ann ann-r">жми, чтобы<br>открыть
-      <svg viewBox="0 0 60 50" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M54 6C44 28 28 40 8 42"/><path d="M18 44L8 42M8 42l3-9"/></svg>
-    </span>
-  </div>
 </section>
 
-<!-- ============ ПРОДУКТЫ (4 продукта) ============ -->
-<section class="section" id="products" style="padding-top:20px">
+<!-- COMPARISON -->
+<section class="section compare">
+  <div class="cglow a"></div><div class="cglow b"></div>
   <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">Продукты</span>
-      <h2 class="h2">Четыре продукта. Одна студия.</h2>
-      <p class="lead">От статичного баннера до playable-механики — весь рекламный стек iGaming в одном инструменте, на едином бренде и брифе.</p>
-    </div>
-    <div class="grid g4">
-      <div class="card reveal d1">
-        <div class="card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg></div>
-        <h3>Баннеры</h3>
-        <p>Мастер-баннер за секунды и пакет ресайзов под все каналы. Четыре готовых пресета сцены.</p>
-        <div class="ctags"><span>65+ форматов</span><span>10 аспектов</span><span>ZIP-экспорт</span></div>
+    <div class="section-head reveal"><span class="eyebrow">Есть разница</span><h2>Как байеры работают с Gen Go и без него</h2><p>Один и тот же оффер, две реальности. Разница — в скорости связок и деньгах на дизайне.</p></div>
+    <div class="cmp-cards">
+      <div class="cmp reveal"><h3>Без Gen Go</h3><div class="sub">Дизайнер, фрилансер и бесконечные правки на каждый ресайз</div>
+        <div class="list"><div class="li"><span class="dot"></span><b>Пакет креативов ждёте по 3–5 дней</b></div><div class="li"><span class="dot"></span><b>Каждый ресайз — отдельная задача</b></div><div class="li"><span class="dot"></span><b>Дизайнер не знает специфику iGaming</b></div><div class="li"><span class="dot"></span><b>Мало гипотез — тестируете вслепую</b></div></div>
+        <div class="price" style="color:var(--t2)">$500+<span>/мес</span></div>
       </div>
-      <div class="card reveal d2">
-        <div class="card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
-        <h3>Лендинги</h3>
-        <p>Готовые вертикали с секциями Hero, бонусы, шаги и дисклеймер. Редактор текста, стилей и языков.</p>
-        <div class="ctags"><span>Betting/Gambling/Sport</span><span>мультиязычность</span></div>
-      </div>
-      <div class="card reveal d3">
-        <div class="card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect x="2" y="6" width="20" height="12" rx="2"/></svg></div>
-        <h3>Playable</h3>
-        <p>Интерактивные playable-креативы под рекламные сети — механики, которые вовлекают до клика.</p>
-        <div class="ctags"><span>интерактив</span><span>под сети</span></div>
-      </div>
-      <div class="card reveal d4">
-        <div class="card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></div>
-        <h3>Видео</h3>
-        <p>Короткие видеокреативы из сцен и переходов под Stories и Reels.</p>
-        <div class="ctags"><span>сцены</span><span>9:16</span><span>16:9</span></div>
+      <div class="cmp pos reveal"><h3>С Gen Go</h3><div class="sub" style="color:#33461a">Один инструмент — весь продакшн под iGaming</div>
+        <div class="list"><div class="li"><span class="dot"></span><b>Десятки креативов за вечер, залив с утра</b></div><div class="li"><span class="dot"></span><b>Все ресайзы — в один клик, без правок</b></div><div class="li"><span class="dot"></span><b>Модель заточена под слоты и беттинг</b></div><div class="li"><span class="dot"></span><b>Больше гипотез — быстрее связка</b></div></div>
+        <div class="price">$19<span>/мес</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ FEATURES / ПРЕИМУЩЕСТВА ============ -->
-<section class="section" id="features">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">Преимущества</span>
-      <h2 class="h2">Почему байеры выбирают Gen Go</h2>
-      <p class="lead">Весь продакшн креатива — от промта до залива — в одном окне. Коротко и по делу.</p>
-    </div>
-    <div class="grid g3">
-      <div class="card reveal d1">
-        <div class="card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7v8l10-12h-7z"/></svg></div>
-        <h3>Скорость связок</h3>
-        <p>Десятки креативов за минуты, а не за дни ожидания дизайнера.</p>
-      </div>
-      <div class="card reveal d2">
-        <div class="card-ic violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6-6.3 4.6L7.9 14 2 9.4h7.6z"/></svg></div>
-        <h3>Заточено под iGaming</h3>
-        <p>Слоты, беттинг, крэш и промо — модель знает язык вертикалей.</p>
-      </div>
-      <div class="card reveal d3">
-        <div class="card-ic cyan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
-        <h3>Ресайзы в один клик</h3>
-        <p>Один креатив — все форматы под площадки без переверстки.</p>
-      </div>
-      <div class="card reveal d1">
-        <div class="card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg></div>
-        <h3>Локализация под ГЕО</h3>
-        <p>Валюта и язык CTA меняются под каждую страну за секунды.</p>
-      </div>
-      <div class="card reveal d2">
-        <div class="card-ic violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg></div>
-        <h3>Готово к модерации</h3>
-        <p>Аккуратные макеты — меньше отклонённых объявлений на площадках.</p>
-      </div>
-      <div class="card reveal d3">
-        <div class="card-ic cyan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/></svg></div>
-        <h3>Команда и API</h3>
-        <p>Общий баланс кредитов, роли и доступ по API для потока задач.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ HOW IT WORKS ============ -->
-<section class="section" id="how" style="padding-top:20px">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">Как это работает</span>
-      <h2 class="h2">От оффера до пакета креативов — 3 шага</h2>
-      <p class="lead">Не нужно уметь дизайнить. Опишите оффер словами — Gen Go соберёт готовый к заливу креатив.</p>
-    </div>
-    <div class="steps">
-      <div class="step reveal d1">
-        <div class="step-num">1</div>
-        <h3>Опишите оффер</h3>
-        <p>Выберите вертикаль (слоты, казино, беттинг), укажите бонус, CTA и настроение. Или начните с готового пресета под вашу связку.</p>
-      </div>
-      <div class="step reveal d2">
-        <div class="step-num">2</div>
-        <h3>Получите вариации</h3>
-        <p>Gen Go генерирует пакет креативов в разных стилях и композициях. Выбирайте лучшие, дорабатывайте промтом, повторяйте удачные.</p>
-      </div>
-      <div class="step reveal d3">
-        <div class="step-num">3</div>
-        <h3>Разложите на форматы</h3>
-        <p>Ресайз в один клик под все площадки и ГЕО. Скачивайте пакетом и заливайте — связка готова к тесту в тот же день.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FORMATS ============ -->
-<section class="section" id="formats" style="padding-top:20px">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">Форматы под вертикали</span>
-      <h2 class="h2">Один инструмент — все связки iGaming</h2>
-      <p class="lead">От джекпот-слотов до предматчевых ставок. Каждая вертикаль со своей визуальной подачей и проверенными паттернами.</p>
-    </div>
-    <div class="formats">
-      <div class="format f1 reveal d1">
-        <span class="ghost" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="12" height="12" rx="2"/><path d="m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6"/><path d="M6 18h.01M10 14h.01M15 6h.01M18 9h.01"/></svg></span>
-        <span class="emoji"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="12" height="12" rx="2"/><path d="m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6"/><path d="M6 18h.01M10 14h.01M15 6h.01M18 9h.01"/></svg></span>
-        <div><h4>Слоты и казино</h4><p>Джекпоты, фриспины, символы удачи и золото — весь азарт слотовых офферов.</p></div>
-      </div>
-      <div class="format f3 reveal d2">
-        <span class="ghost" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>
-        <span class="emoji"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>
-        <div><h4>Спорт-беттинг</h4><p>Матчи, коэффициенты, экспрессы. Энергия стадиона и момента ставки.</p></div>
-      </div>
-      <div class="format f2 reveal d3">
-        <span class="ghost" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span>
-        <span class="emoji"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span>
-        <div><h4>Крэш и мини-игры</h4><p>Aviator-стиль, множители, динамика роста. То, что цепляет в лентах.</p></div>
-      </div>
-      <div class="format f4 reveal d4">
-        <span class="ghost" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg></span>
-        <span class="emoji"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg></span>
-        <div><h4>Промо и бонусы</h4><p>Приветственные пакеты, депозит-бонусы, VIP. Акценты на выгоде оффера.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ COMPARISON ============ -->
-<section class="section" style="padding-top:20px">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">Есть разница</span>
-      <h2 class="h2">Как байеры работают с Gen Go и без него</h2>
-      <p class="lead">Один и тот же оффер, две реальности. Разница — в скорости связок и деньгах на дизайне.</p>
-    </div>
-    <div class="compare">
-      <div class="comp-col bad reveal d1">
-        <div class="comp-head">
-          <div class="comp-badge bad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
-          <div><h3>Без Gen Go</h3><span>Дизайнер + фрилансер + правки</span></div>
-        </div>
-        <ul class="comp-list">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6L6 18M6 6l12 12"/></svg>Пакет креативов ждёте по 3–5 дней</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6L6 18M6 6l12 12"/></svg>Каждый ресайз — отдельная задача и правка</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6L6 18M6 6l12 12"/></svg>Дизайнер не знает специфику iGaming</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6L6 18M6 6l12 12"/></svg>Мало гипотез — тестируете вслепую</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6L6 18M6 6l12 12"/></svg>$500–1500 в месяц на продакшн</li>
-        </ul>
-        <div class="comp-foot">Медленно, дорого, узкое горлышко</div>
-      </div>
-      <div class="comp-col good reveal d2">
-        <div class="comp-head">
-          <div class="comp-badge good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg></div>
-          <div><h3>С Gen Go</h3><span>Один инструмент — весь продакшн</span></div>
-        </div>
-        <ul class="comp-list">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Десятки креативов за вечер, залив с утра</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Все ресайзы — в один клик, без правок</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Модель заточена под слоты и беттинг</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Больше гипотез — быстрее заходящая связка</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>От $19 в месяц за весь объём</li>
-        </ul>
-        <div class="comp-foot">Быстро, дёшево, масштабируемо</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ PRICING ============ -->
+<!-- PRICING -->
 <section class="section" id="pricing">
-  <div class="aurora" style="opacity:.6"></div>
-  <div class="container" style="position:relative;z-index:2">
-    <div class="section-head reveal">
-      <span class="eyebrow">Тарифы</span>
-      <h2 class="h2">Прозрачные цены. Платите за кредиты, а не за место</h2>
-      <p class="lead">Кредиты начисляются каждый месяц и тратятся на генерации и ресайзы. Неиспользованные кредиты переносятся на следующий месяц.</p>
-    </div>
-
-    <div class="pricing-toggle reveal">
-      <div class="toggle-track" id="toggleTrack">
-        <div class="toggle-thumb" id="toggleThumb"></div>
-        <button class="active" data-period="monthly">Ежемесячно</button>
-        <button data-period="annual">Ежегодно</button>
-      </div>
-      <span class="save-badge">−20% на год</span>
-    </div>
-
+  <div class="container">
+    <div class="section-head reveal"><span class="eyebrow">Тарифы</span><h2>Платите за кредиты, а не за место</h2><p>Кредиты начисляются каждый месяц и тратятся на генерации и ресайзы. Неиспользованные — переносятся.</p></div>
     <div class="plans">
-      <!-- Старт -->
-      <div class="plan reveal d1">
-        <div class="plan-name">СТАРТ</div>
-        <div class="plan-tag">Для соло-байера и первых тестов связок</div>
-        <div class="plan-price"><span class="cur">$</span><span class="amt" data-monthly="19" data-annual="15">19</span><span class="per">/мес</span></div>
-        <div class="plan-annual" data-annual-note="$180 при оплате за год">выставляется помесячно</div>
-        <div class="plan-credits">
-          <div class="big">500 кредитов / мес</div>
-          <div class="sub">≈ 120 баннеров или 250 ресайзов</div>
-        </div>
-        <ul class="plan-feats">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>До 2 генераций параллельно</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Все форматы и ресайзы</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Пресеты под все вертикали</li>
-          <li class="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg>Приоритетная очередь</li>
-        </ul>
-        <a href="#" class="btn btn-ghost btn-block">Начать со Старта</a>
+      <div class="plan reveal">
+        <div class="pname">СТАРТ</div><div class="ptag">Для соло-байера и первых тестов</div>
+        <div class="price"><span class="cur">$</span>19<span class="per">/мес</span></div>
+        <div class="credits"><b>500 кредитов / мес</b><small>≈ 120 баннеров или 250 ресайзов</small></div>
+        <ul><li><span class="ck">✓</span>До 2 генераций параллельно</li><li><span class="ck">✓</span>Все форматы и ресайзы</li><li><span class="ck">✓</span>Пресеты под все вертикали</li><li class="no"><span class="ck">✕</span>Приоритетная очередь</li></ul>
+        <a class="btn btn-out" href="#">Начать со Старта</a>
       </div>
-
-      <!-- Профи -->
-      <div class="plan popular reveal d2">
-        <span class="plan-badge">★ Популярный выбор</span>
-        <div class="plan-name">ПРОФИ</div>
-        <div class="plan-tag">Для активного байера и потока связок</div>
-        <div class="plan-price"><span class="cur">$</span><span class="amt" data-monthly="59" data-annual="47">59</span><span class="per">/мес</span></div>
-        <div class="plan-annual" data-annual-note="$564 при оплате за год">выставляется помесячно</div>
-        <div class="plan-credits">
-          <div class="big">1 500 кредитов / мес</div>
-          <div class="sub">≈ 375 баннеров или 750 ресайзов</div>
-        </div>
-        <ul class="plan-feats">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>До 6 генераций параллельно</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Приоритетная очередь генерации</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Ранний доступ к новым моделям</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Перенос кредитов на след. месяц</li>
-        </ul>
-        <a href="#" class="btn btn-primary btn-block">Выбрать Профи</a>
+      <div class="plan pop reveal">
+        <span class="badge">MOST POPULAR</span>
+        <div class="pname">ПРОФИ</div><div class="ptag">Для активного байера и потока связок</div>
+        <div class="price"><span class="cur">$</span>59<span class="per">/мес</span></div>
+        <div class="credits"><b>1 500 кредитов / мес</b><small>≈ 375 баннеров или 750 ресайзов</small></div>
+        <ul><li><span class="ck">✓</span>До 6 генераций параллельно</li><li><span class="ck">✓</span>Приоритетная очередь генерации</li><li><span class="ck">✓</span>Ранний доступ к новым моделям</li><li><span class="ck">✓</span>Перенос кредитов на след. месяц</li></ul>
+        <a class="btn btn-primary" href="#">Выбрать Профи</a>
       </div>
-
-      <!-- Студия -->
-      <div class="plan reveal d3">
-        <div class="plan-name">СТУДИЯ</div>
-        <div class="plan-tag">Для команды и максимального объёма</div>
-        <div class="plan-price"><span class="cur">$</span><span class="amt" data-monthly="139" data-annual="111">139</span><span class="per">/мес</span></div>
-        <div class="plan-annual" data-annual-note="$1 332 при оплате за год">выставляется помесячно</div>
-        <div class="plan-credits">
-          <div class="big">4 000 кредитов / мес</div>
-          <div class="sub">≈ 1 000 баннеров · лучшая цена за кредит</div>
-        </div>
-        <ul class="plan-feats">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>До 12 генераций параллельно</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>До 5 пользователей и общий баланс</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Роли и права доступа</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Приоритетная поддержка</li>
-        </ul>
-        <a href="#" class="btn btn-ghost btn-block">Выбрать Студию</a>
+      <div class="plan reveal">
+        <div class="pname">СТУДИЯ</div><div class="ptag">Для команды и максимального объёма</div>
+        <div class="price"><span class="cur">$</span>139<span class="per">/мес</span></div>
+        <div class="credits"><b>4 000 кредитов / мес</b><small>≈ 1 000 баннеров · лучшая цена</small></div>
+        <ul><li><span class="ck">✓</span>До 12 генераций параллельно</li><li><span class="ck">✓</span>До 5 пользователей и общий баланс</li><li><span class="ck">✓</span>Роли и права доступа</li><li><span class="ck">✓</span>Приоритетная поддержка</li></ul>
+        <a class="btn btn-out" href="#">Выбрать Студию</a>
       </div>
     </div>
+    <div class="price-banner reveal"><div><h4>Забирай по спеццене — старт уже сегодня</h4><p>Годовая оплата выгоднее на 20%. Первый креатив — бесплатно, без карты.</p></div><a class="btn" href="#">Book Now</a></div>
+  </div>
+</section>
 
-    <!-- Enterprise -->
-    <div class="enterprise reveal">
-      <div class="ent-txt">
-        <h3>Агентство или крупный поток?</h3>
-        <p>Индивидуальный объём кредитов, безлимит пользователей, SSO и контроль доступа, выделенный менеджер и SLA. Соберём тариф под ваш реальный расход трафика.</p>
-      </div>
-      <a href="mailto:support@clickable.agency?subject=Enterprise-тариф%20Gen%20Go" class="btn btn-primary btn-lg ent-cta">Обсудить условия</a>
+<!-- REVIEWS marquee -->
+<section class="section">
+  <div class="container"><div class="section-head reveal"><span class="eyebrow">Отзывы</span><h2>Байеры уже льют на креативах Gen Go</h2></div></div>
+  <div class="rev-mask"><div class="rev-track" id="revTrack"></div></div>
+</section>
+
+<!-- CTA mini -->
+<section class="cta-mini reveal"><div class="container"><div class="cta-bar"><h3>Присоединяйтесь к байерам, которые уже на потоке</h3><a class="btn" href="#">Начать бесплатно</a></div></div></section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-head reveal"><span class="eyebrow">Вопросы</span><h2>Отвечаем на главное</h2></div>
+    <div class="faq reveal">
+      <details open><summary>Что такое кредиты и на что они тратятся?</summary><p>Кредиты — внутренняя валюта Gen Go. Они начисляются по вашему тарифу каждый месяц и тратятся на генерацию баннеров, ресайзы и сборку лендингов. Неиспользованные кредиты на тарифах Профи и Студия переносятся на следующий месяц.</p></details>
+      <details><summary>Насколько креативы подходят под гемблинг и беттинг?</summary><p>Модель заточена под iGaming: слоты, казино, беттинг и спорт. Пресеты сцен и стилей учитывают специфику вертикалей и требования рекламных сетей.</p></details>
+      <details><summary>Нужны ли навыки дизайна?</summary><p>Нет. Опишите оффер словами — Gen Go соберёт готовый к заливу креатив. Любую вариацию можно доработать промтом.</p></details>
+      <details><summary>Можно ли делать ресайзы под разные площадки?</summary><p>Да, 65+ форматов и 10 аспектов. Ресайз пакетом в один клик, экспорт ZIP.</p></details>
+      <details><summary>Что с оплатой и можно ли отменить?</summary><p>Помесячная оплата, годовая — выгоднее на 20%. Отменить можно в любой момент, без скрытых условий.</p></details>
     </div>
   </div>
 </section>
 
-<!-- ============ REVIEWS ============ -->
-<section class="section" style="padding-top:20px">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">Отзывы</span>
-      <h2 class="h2">Байеры уже льют на креативах Gen Go</h2>
-    </div>
-    <div class="rating-strip reveal">
-      <span class="rnum">4.9</span>
-      <span class="rstars">★★★★★</span>
-      <span class="rdiv"></span>
-      <span class="rmeta"><b>200+</b> арбитражных команд уже в Gen Go</span>
-    </div>
-    <div class="reviews">
-      <div class="review reveal d1">
-        <div class="rtop"><span class="metric">3–4 дня → 1 вечер</span><span class="stars">★★★★★</span></div>
-        <p>«Раньше пакет креативов под новый оффер ждал дизайнера по 3–4 дня. Сейчас собираю 20 вариаций за вечер и с утра уже тестирую. CR по заходящим связкам вырос ощутимо».</p>
-        <div class="who">
-          <div class="ava-wrap"><div class="ava" style="background:var(--grad-lime)">МК</div><span class="vf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M20 6L9 17l-5-5"/></svg></span></div>
-          <div><b>Максим К.</b><span>Media buyer, Tier-1 казино</span></div>
-        </div>
-      </div>
-      <div class="review feat reveal d2">
-        <div class="rtop"><span class="metric">−70% на дизайн</span><span class="stars">★★★★★</span></div>
-        <p>«Ресайзы — это то, за что готов платить отдельно. Один креатив разложился на пуши, сторис и in-app без переверстки. Экономия на дизайне окупает тариф в первую неделю».</p>
-        <div class="who">
-          <div class="ava-wrap"><div class="ava" style="background:var(--grad-violet)">АС</div><span class="vf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M20 6L9 17l-5-5"/></svg></span></div>
-          <div><b>Анна С.</b><span>Head of Media, арбитражная команда</span></div>
-        </div>
-      </div>
-      <div class="review reveal d3">
-        <div class="rtop"><span class="metric">−40% реджектов</span><span class="stars">★★★★★</span></div>
-        <p>«Заточенность под гемблинг видно сразу — модель понимает, как выглядит слотовый джекпот и спорт-оффер. Меньше отклонённых объявлений на модерации, чем с обычными ИИ-генераторами».</p>
-        <div class="who">
-          <div class="ava-wrap"><div class="ava" style="background:var(--grad-cyan-violet)">ДП</div><span class="vf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M20 6L9 17l-5-5"/></svg></span></div>
-          <div><b>Дмитрий П.</b><span>Owner, affiliate-агентство</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- FINAL CTA -->
+<section class="section"><div class="container"><div class="cta-final reveal"><img class="cta-bg" src="assets/v4/cta-final-full.png" alt="" /><div class="cta-content"><span class="eyebrow">Готовы масштабировать связки?</span><h2>Первый креатив — бесплатно.</h2><p>Кредиты начисляются каждый месяц и тратятся на генерации и ресайзы. Неиспользованные — переносятся на следующий месяц.</p><div class="cta-btns"><a class="btn btn-primary" href="#">Начать бесплатно →</a><a class="btn btn-ghost" href="#">Смотреть тарифы</a></div></div></div></div></section>
 
-<!-- ============ FAQ ============ -->
-<section class="section" id="faq" style="padding-top:20px">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">Частые вопросы</span>
-      <h2 class="h2">Отвечаем на главное</h2>
-    </div>
-    <div class="faq-wrap">
-      <div class="faq reveal">
-        <button class="faq-q">Что такое кредиты и на что они тратятся?
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-        <div class="faq-a"><p>Кредиты — внутренняя валюта Gen Go. Генерация баннера стоит около 4 кредитов, ресайз — около 2. Точная стоимость показывается перед запуском, так что вы всегда контролируете расход. Кредиты начисляются каждый месяц и переносятся на следующий на тарифах Профи и выше.</p></div>
-      </div>
-      <div class="faq reveal">
-        <button class="faq-q">Насколько креативы подходят под гемблинг и беттинг?
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-        <div class="faq-a"><p>Gen Go обучен на визуальном языке iGaming: слоты, лайв-казино, спорт-беттинг, крэш-игры, промо и бонусы. Есть готовые пресеты под каждую вертикаль, а макеты собираются аккуратно — с продуманным CTA и без «мусора», который часто режет модерацию рекламных площадок.</p></div>
-      </div>
-      <div class="faq reveal">
-        <button class="faq-q">Нужны ли навыки дизайна?
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-        <div class="faq-a"><p>Нет. Достаточно описать оффер словами или выбрать пресет. Gen Go сам подберёт композицию, типографику и акценты. При желании креатив дорабатывается уточняющим промтом — как в диалоге, без графических редакторов.</p></div>
-      </div>
-      <div class="faq reveal">
-        <button class="faq-q">Можно ли делать ресайзы под разные площадки?
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-        <div class="faq-a"><p>Да, это одна из ключевых функций. Один креатив раскладывается в один клик на все нужные форматы: квадрат 1:1, сторис 9:16, горизонтальные баннеры, push и in-app. Композиция пересобирается автоматически, важные элементы не обрезаются.</p></div>
-      </div>
-      <div class="faq reveal">
-        <button class="faq-q">Как считать команду и общий баланс?
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-        <div class="faq-a"><p>На тарифе Студия доступно до 5 пользователей с общим балансом кредитов, ролями и правами доступа. Для агентств и больших команд есть Enterprise — с безлимитом пользователей, SSO и выделенным менеджером.</p></div>
-      </div>
-      <div class="faq reveal">
-        <button class="faq-q">Что с оплатой и можно ли отменить?
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-        <div class="faq-a"><p>Оплата помесячно или за год (−20%). Отменить или сменить тариф можно в любой момент из личного кабинета — без звонков и переписок. На старте доступны бесплатные кредиты, чтобы протестировать инструмент без карты.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FINAL CTA ============ -->
-<section class="section" style="padding-top:20px">
-  <div class="container">
-    <div class="cta-final reveal">
-      <span class="eyebrow">Готовы масштабировать связки?</span>
-      <h2>Первый креатив — бесплатно.<br>Первая заходящая связка — уже сегодня</h2>
-      <p class="lead">Подключайтесь за пару минут, потратьте стартовые кредиты и оцените Gen Go на своём реальном оффере.</p>
-      <div class="hero-cta">
-        <a href="#" class="btn btn-primary btn-lg">Начать бесплатно
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a href="#pricing" class="btn btn-ghost btn-lg">Смотреть тарифы</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FOOTER ============ -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <img src="logo.svg" alt="Gen Go" />
-        <p>ИИ-генератор рекламных креативов для гемблинга и беттинга. Больше связок, меньше рутины, выше ROAS.</p>
-      </div>
-      <div class="footer-col">
-        <h5>Продукт</h5>
-        <a href="#features">Возможности</a>
-        <a href="#how">Как это работает</a>
-        <a href="#formats">Форматы</a>
-        <a href="#pricing">Тарифы</a>
-      </div>
-      <div class="footer-col">
-        <h5>Компания</h5>
-        <a href="#">О нас</a>
-        <a href="#">Блог</a>
-        <a href="#">Кейсы</a>
-        <a href="mailto:support@clickable.agency">Контакты</a>
-      </div>
-      <div class="footer-col">
-        <h5>Правовое</h5>
-        <a href="#">Условия использования</a>
-        <a href="#">Политика конфиденциальности</a>
-        <a href="#">Ответственная реклама</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 Gen Go by Clickable Agency. Все права защищены.</p>
-      <span class="age-badge"><b>18+</b> Реклама только для лицензированных операторов. Играй ответственно.</span>
-      <div class="footer-social">
-        <a href="#" aria-label="Telegram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 2L2 10l6 2 2 6 3-4 5 4 4-16zM10 14l7-6-9 5z"/></svg></a>
-        <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h3l-7 8 8 12h-6l-5-7-5 7H3l8-9L3 2h6l4 6z"/></svg></a>
-        <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4a2 2 0 100 4 2 2 0 000-4zM3 9h3v12H3zM9 9h3v2a3 3 0 013-2c3 0 4 2 4 5v6h-3v-6c0-1-1-2-2-2s-2 1-2 2v6H9z"/></svg></a>
-      </div>
-    </div>
-  </div>
-</footer>
+<!-- FOOTER -->
+<footer><div class="container foot">
+  <div><div class="nav-logo" style="margin-bottom:12px"><img src="logo.svg" alt="Gen Go" class="logo-img"/></div><div>ИИ-генератор рекламных креативов<br/>для казино и беттинга.</div></div>
+  <div class="foot-cols"><div><b style="color:var(--t2)">Продукт</b><a href="#tools">Инструменты</a><a href="#studio">Форматы</a><a href="#pricing">Тарифы</a></div><div><b style="color:var(--t2)">Компания</b><a href="#">О нас</a><a href="#faq">FAQ</a><a href="#">Контакты</a></div></div>
+</div><div class="container" style="margin-top:36px;color:var(--t3);font-size:13px">© 2026 Gen Go. 18+ Играйте ответственно.</div></footer>
 
 <script>
-// Nav scroll state
-const nav=document.getElementById('nav');
-addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>20));
-
-// Mobile menu
-const toggle=document.getElementById('navToggle'),links=document.getElementById('navLinks');
-toggle.addEventListener('click',()=>links.classList.toggle('mobile-open'));
-links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>links.classList.remove('mobile-open')));
-
-// Pricing toggle
-const track=document.getElementById('toggleTrack'),thumb=document.getElementById('toggleThumb');
-const pbtns=[...track.querySelectorAll('button')];
-function sizeThumb(){const a=track.querySelector('button.active');thumb.style.width=a.offsetWidth+'px';thumb.style.transform='translateX('+(a.offsetLeft-5)+'px)';}
-function setPeriod(p){
-  pbtns.forEach(b=>b.classList.toggle('active',b.dataset.period===p));
-  sizeThumb();
-  document.querySelectorAll('.amt').forEach(el=>{el.textContent=el.dataset[p];});
-  document.querySelectorAll('.plan-annual').forEach(el=>{
-    el.textContent = p==='annual' ? el.dataset.annualNote : 'выставляется помесячно';
-  });
-}
-pbtns.forEach(b=>b.addEventListener('click',()=>setPeriod(b.dataset.period)));
-addEventListener('load',sizeThumb);addEventListener('resize',sizeThumb);sizeThumb();
-
-// FAQ accordion
-document.querySelectorAll('.faq-q').forEach(q=>{
-  q.addEventListener('click',()=>{
-    const item=q.parentElement,a=q.nextElementSibling,open=item.classList.contains('open');
-    document.querySelectorAll('.faq').forEach(f=>{f.classList.remove('open');f.querySelector('.faq-a').style.maxHeight=null;});
-    if(!open){item.classList.add('open');a.style.maxHeight=a.scrollHeight+'px';}
-  });
-});
-
-// Scroll reveal
-const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12,rootMargin:'0px 0px -60px 0px'});
-document.querySelectorAll('.reveal:not(.in)').forEach(el=>io.observe(el));
-
-// Animated counters
-function animateCount(el){
-  const target=+el.dataset.count, suffix=el.dataset.suffix||'', dur=1400, t0=performance.now();
-  function tick(now){
-    const p=Math.min((now-t0)/dur,1), eased=1-Math.pow(1-p,3);
-    el.textContent=Math.round(eased*target)+suffix;
-    if(p<1)requestAnimationFrame(tick);
+// ===== resize banner animation + chip sync =====
+(function(){
+  const rb=document.getElementById('rb'),chips=[...document.querySelectorAll('#chips .chip')];
+  const el={trophy:rb.querySelector('.trophy'),diceSm:rb.querySelector('.dice-sm'),chips:rb.querySelector('.chips'),diceLg:rb.querySelector('.dice-lg'),txt:rb.querySelector('.rb-txt')};
+  const fmtEl=document.getElementById('rbFmt'),tagEl=document.getElementById('rbTag');
+  // поэлементный морфинг: [x,y,w,h] в % баннера для каждого элемента, по данным из Figma
+  // [left%, top%, width%] — высота авто (элемент держит пропорции)
+  const D={
+    // координаты перенесены 1:1 из Figma-кадров Anim 6–10 (626:2042…)
+    // trophy/diceSm/diceLg/chips = [left%, top%, width%];  txt = [left%, bottom%, targetWidth%]
+    '1x1':{w:330,h:330,tag:'● POST',trophy:[6,1,98],diceSm:[10.9,18.5,15.8],diceLg:[-12.5,34.3,46.0],chips:[74.8,41.7,39.1],txt:[6.0,6.0,88.0]},
+    '4x5':{w:330,h:412,tag:'● POST',trophy:[-5,2,110],diceSm:[16.4,21.9,15.8],diceLg:[-10.6,37.6,46.0],chips:[69.6,43.7,39.1],txt:[8.7,6.9,82.6]},
+    '9x16':{w:330,h:586,tag:'● STORY',trophy:[11,3,118],diceSm:[2,17,27],diceLg:[-8,53,50],chips:[70,53,25],txt:[8.7,4.9,82.6]},
+    '16x9':{w:586,h:330,tag:'● WIDE ANGLE',trophy:[43,1,62],diceSm:[17.8,20.1,9.8],diceLg:[29.8,14.5,27.1],chips:[78,52,25],txt:[4.9,8.7,43.7]},
+    '3x1':{w:692,h:234,tag:'● WIDE ANGLE',trophy:[49,-6,52],diceSm:[33.9,5.8,8.9],diceLg:[42.7,25.7,21.9],chips:[80,52,22],txt:[4.1,12.3,37.0]}
+  };
+  const order=['1x1','4x5','9x16','16x9','3x1'];
+  function put(node,d){node.style.left=d[0]+'%';node.style.top=d[1]+'%';node.style.width=d[2]+'%';}
+  let i=0;
+  function apply(k){
+    const d=D[k];
+    rb.style.width=d.w+'px';rb.style.height=d.h+'px';
+    put(el.trophy,d.trophy);put(el.diceSm,d.diceSm);put(el.chips,d.chips);put(el.diceLg,d.diceLg);
+    // текст+кнопка: прибиты к низу, масштабируются как единый блок (чтобы кнопка не была огромной)
+    const tx=d.txt;el.txt.style.left=tx[0]+'%';el.txt.style.bottom=tx[1]+'%';el.txt.style.transform='scale('+((tx[2]/100*d.w)/520).toFixed(3)+')';
+    // «TAKE YOUR CHANCE»: салатовая полупрозрачная плашка на всех форматах (в CSS); слева в широких
+    const wide=(k==='16x9'||k==='3x1');
+    el.txt.style.textAlign=wide?'left':'center';
+    fmtEl.textContent=k.replace('x',':');tagEl.textContent=d.tag;
+    chips.forEach(c=>c.classList.toggle('act',c.dataset.r===k));
   }
-  requestAnimationFrame(tick);
-}
-const cio=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){animateCount(e.target);cio.unobserve(e.target);}});},{threshold:.6});
-document.querySelectorAll('.metric-num[data-count]').forEach(el=>cio.observe(el));
+  apply(order[0]);
+  // непрерывно, без паузы: интервал ≈ длительности перехода
+  setInterval(()=>{i=(i+1)%order.length;apply(order[i]);},950);
+})();
 
-// Печатающийся промт в hero
-const typedEl=document.getElementById('typed');
-if(typedEl){
-  const prompts=[
-    "Слот Book of Gold, джекпот 200%, CTA «Крути и выигрывай»",
-    "Спорт-беттинг: экспресс на топ-матчи, коэффициент ×2",
-    "Промо-бонус: 100 фриспинов новым игрокам",
-    "Крэш-игра Aviator, множитель ×500, азарт и динамика"
+// ===== decor layer scaling (1920×958 Figma space → stage width) =====
+(function(){
+  const stage=document.querySelector('.studio-stage'),decor=document.getElementById('decor');
+  if(!stage||!decor)return;
+  const F=1.3; // коэффициент укрупнения декора
+  function fit(){decor.style.transform='translate(-50%,-50%) scale('+(stage.clientWidth/1920*F)+')';}
+  fit();
+  window.addEventListener('resize',fit);
+  if(window.ResizeObserver)new ResizeObserver(fit).observe(stage);
+})();
+
+// ===== reviews marquee (duplicated for seamless loop) =====
+(function(){
+  const data=[
+    {m:'×8 к скорости',t:'Залили первую связку через Gen Go за вечер — десятки баннеров под слоты и ресайзы под все ГЕО в один клик. На дизайнеров больше не тратим бюджет.',n:'Артём Ковалёв',r:'Media buyer, Solo',a:'АК'},
+    {m:'+37% CTR',t:'Тестируем в разы больше гипотез. Модель понимает специфику казино и беттинга — креативы заходят без бесконечных правок.',n:'Марина Соколова',r:'Head of Buying, Affiliate team',a:'МС'},
+    {m:'5 дней → минуты',t:'Раньше пакет креативов ждали 3–5 дней от фрилансеров. Теперь готово за минуты, а лендинг собираем на основе баннера тут же.',n:'Дмитрий Орлов',r:'Affiliate, Team Lead',a:'ДО'},
+    {m:'−70% на дизайн',t:'Свернули расходы на продакшн почти в ноль. Один инструмент закрывает баннеры, ресайзы и лендинги под все наши офферы.',n:'Игорь Лебедев',r:'CMO, iGaming',a:'ИЛ'},
+    {m:'x3 объём тестов',t:'Гоняем втрое больше креативов в неделю. Пакет ресайзов из одного клика экономит команде целые дни рутины.',n:'Ольга Наумова',r:'Performance lead',a:'ОН'},
+    {m:'ROI +24%',t:'Заточенность под слоты реально видна в цифрах — связки заходят быстрее, а бюджет на креатив упал в разы.',n:'Павел Гринь',r:'Affiliate buyer',a:'ПГ'}
   ];
-  let pi=0,ci=0,del=false;
-  (function tick(){
-    const cur=prompts[pi];
-    typedEl.textContent=cur.slice(0,ci);
-    if(!del){
-      if(ci<cur.length){ci++;setTimeout(tick,38);}
-      else{del=true;setTimeout(tick,1900);}
-    }else{
-      if(ci>0){ci--;setTimeout(tick,18);}
-      else{del=false;pi=(pi+1)%prompts.length;setTimeout(tick,260);}
-    }
-  })();
-}
+  const stars='★★★★★';
+  const card=d=>`<div class="rev-card"><div class="top"><span class="metric">${d.m}</span><span class="stars">${stars}</span></div><div class="txt">«${d.t}»</div><div class="who"><div class="av">${d.a}</div><div><b>${d.n}</b><small>${d.r}</small></div></div></div>`;
+  const html=data.map(card).join('');
+  const track=document.getElementById('revTrack');
+  track.innerHTML=html+html;
+  const mask=track.parentElement;
+  let half=0;const measure=()=>{half=track.scrollWidth/2;};
+  measure();window.addEventListener('resize',measure);
+  const wrap=s=>{if(half){if(s<0)s+=half;else if(s>=half)s-=half;}return s;};
+  let hovering=false,drag=false,startX=0,startScroll=0;
+  // автопрокрутка (пауза при наведении/перетаскивании)
+  function tick(){if(!hovering&&!drag&&half){mask.scrollLeft=wrap(mask.scrollLeft+.5);}requestAnimationFrame(tick);}
+  requestAnimationFrame(tick);
+  mask.addEventListener('mouseenter',()=>hovering=true);
+  mask.addEventListener('mouseleave',()=>hovering=false);
+  // перетаскивание мышью
+  mask.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')return;drag=true;startX=e.clientX;startScroll=mask.scrollLeft;mask.setPointerCapture(e.pointerId);mask.classList.add('grabbing');});
+  mask.addEventListener('pointermove',e=>{if(!drag)return;mask.scrollLeft=wrap(startScroll-(e.clientX-startX));});
+  const end=()=>{if(drag){drag=false;mask.classList.remove('grabbing');}};
+  mask.addEventListener('pointerup',end);mask.addEventListener('pointercancel',end);
+})();
+
+// ===== reveal on scroll =====
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// ===== custom cursor (subtle lime, not stars) =====
+(function(){
+  const ring=document.getElementById('cur'),dot=document.getElementById('curDot');
+  let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my;
+  addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+  (function loop(){rx+=(mx-rx)*.18;ry+=(my-ry)*.18;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+  const hot='a,button,.btn,.step,.tile,summary,.chip,input';
+  addEventListener('mouseover',e=>{if(e.target.closest(hot))ring.classList.add('big');});
+  addEventListener('mouseout',e=>{if(e.target.closest(hot))ring.classList.remove('big');});
+})();
 </script>
 </body>
 </html>
