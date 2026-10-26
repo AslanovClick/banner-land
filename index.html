@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Gen Go — ИИ-генератор креативов для казино и беттинга</title>
-<meta name="description" content="Gen Go — ИИ-сервис рекламных креативов для казино и беттинга, построенный на 12 годах опыта в гемблинге: креативы, которые конвертят, 65+ ресайзов и лендинги." />
+<title>Gen Go — AI ad creatives for casino and betting</title>
+<meta name="description" content="Gen Go is an AI service for casino and betting ad creatives, built on 12 years of gambling experience: creatives that convert, 65+ resizes and landing pages." />
 <meta name="theme-color" content="#0d0f18" />
+<script>try{var l=new URLSearchParams(location.search).get("lang")||localStorage.getItem("gengo-lang");if(l&&l!=="en"&&/^(uk|ru)$/.test(l)){document.documentElement.lang=l;document.documentElement.classList.add("i18n-wait");setTimeout(function(){document.documentElement.classList.remove("i18n-wait")},1500)}}catch(e){}</script>
 <link rel="icon" type="image/svg+xml" href="logo-mark.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -61,7 +62,7 @@ img{display:block;max-width:100%}
 #cur.big{width:60px;height:60px;background:rgba(198,255,61,.08);border-color:rgba(198,255,61,.7)}
 #curDot{width:6px;height:6px;background:var(--lime);box-shadow:0 0 12px rgba(198,255,61,.8)}
 /* кастомный курсор — только для мыши; на тач-экранах и гибридах — обычный */
-@media not all and (hover:hover) and (pointer:fine){body{cursor:auto}#cur,#curDot{display:none}.btn,.step,.nav-burger,.faq summary,.chip{cursor:pointer}}
+@media not all and (hover:hover) and (pointer:fine){body{cursor:auto}#cur,#curDot{display:none}.btn,.step,.nav-burger,.faq summary,.chip,.lang-btn,.lang-menu button{cursor:pointer}}
 
 /* NAV */
 .nav{position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(13,15,24,.6);border-bottom:1px solid rgba(255,255,255,.05)}
@@ -121,6 +122,8 @@ body.menu-open{overflow:hidden}
 .hero-copy{max-width:620px}
 .hero h1{font-size:clamp(38px,5vw,66px);font-weight:800;line-height:1.04;letter-spacing:-.025em;margin:22px 0 18px}
 .hero h1 .hl{color:var(--lime)}
+/* короткие слова держатся со следующим неразрывным пробелом (EN «and betting», «actually convert»; RU/UK — предлоги и союзы), поэтому EN/UK чуть мельче — чтобы пары влезали в ширину */
+html[lang="en"] .hero h1{font-size:clamp(34px,4.55vw,60px)}
 .hero-lead{font-size:clamp(16px,1.3vw,19px);color:var(--t2);max-width:440px;margin-bottom:30px}
 .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
 /* hero interface panel (gif slot) */
@@ -162,6 +165,8 @@ body.menu-open{overflow:hidden}
   .hero::before{display:none}
   .hero-copy{max-width:none}
   .hero h1{font-size:clamp(32px,9.4vw,52px);margin:18px 0 14px}
+  html[lang="en"] .hero h1{font-size:clamp(26px,8.45vw,47px)}
+  html[lang="uk"] .hero h1{font-size:clamp(26px,8.8vw,49px)}
   .hero-lead{font-size:16px;margin-bottom:24px;max-width:460px}
   /* девушка из макета — отдельным слоем под текстом, края растворяются в фоне */
   /* картинка с прозрачными полями (160px сверху, 100px по бокам из 1224) и запечённой контровой подсветкой — поэтому шире и с отрицательным отступом */
@@ -554,6 +559,30 @@ footer{border-top:1px solid var(--border);padding:52px 0 40px;margin-top:20px}
 .foot a{transition:color .2s}
 @media(max-width:640px){footer{padding:40px 0 32px}.foot{gap:32px}.foot-cols{gap:56px}}
 
+/* ===== селектор языка ===== */
+.i18n-wait body{opacity:0}
+.lang{position:relative;flex-shrink:0}
+.lang-btn{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 11px 0 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--border2);color:var(--text);font:700 13.5px/1 'Manrope',system-ui,sans-serif;letter-spacing:.04em;cursor:none;transition:border-color .25s,color .25s,background .25s}
+.lang-btn .globe{width:17px;height:17px;color:var(--t2);transition:color .25s}
+.lang-btn .chev{width:14px;height:14px;color:var(--t3);transition:rotate .3s cubic-bezier(.2,.8,.3,1),color .25s}
+.lang-btn:hover,.lang.open .lang-btn{border-color:var(--lime-brd);background:var(--lime-dim);color:var(--lime)}
+.lang-btn:hover .globe,.lang.open .lang-btn .globe,.lang-btn:hover .chev,.lang.open .lang-btn .chev{color:var(--lime)}
+.lang.open .lang-btn .chev{rotate:180deg}
+.lang-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:130;min-width:196px;margin:0;padding:6px;list-style:none;background:rgba(18,20,27,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--border2);border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 0 1px rgba(198,255,61,.04);opacity:0;visibility:hidden;translate:0 -6px;transition:opacity .22s,translate .3s cubic-bezier(.2,.8,.3,1),visibility .22s}
+.lang.open .lang-menu{opacity:1;visibility:visible;translate:none}
+.lang-up .lang-menu{top:auto;bottom:calc(100% + 8px);translate:0 6px}
+.lang-menu button{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;border:0;border-radius:11px;background:none;color:var(--t2);font:600 14.5px/1.2 'Manrope',system-ui,sans-serif;text-align:left;cursor:none;transition:background .2s,color .2s}
+.lang-menu button:hover,.lang-menu button:focus-visible{background:rgba(255,255,255,.05);color:var(--text);outline:none}
+.lang-menu .code{width:24px;font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--t3)}
+.lang-menu .ck{width:15px;height:15px;margin-left:auto;color:var(--lime);opacity:0;transition:opacity .2s}
+.lang-menu button[aria-selected="true"]{color:var(--text);background:rgba(198,255,61,.07)}
+.lang-menu button[aria-selected="true"] .code{color:var(--lime)}
+.lang-menu button[aria-selected="true"] .ck{opacity:1}
+.foot-bottom{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:36px;color:var(--t3);font-size:13px}
+@media(max-width:960px){.lang-btn{height:42px}}
+@media(max-width:420px){.lang-btn{padding:0 9px;gap:5px}.lang-btn .chev{display:none}}
+@media(max-width:360px){.lang-btn .globe{display:none}}
+
 /* полоса прогресса чтения */
 .progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:101;background:linear-gradient(90deg,var(--lime),#8fe04a);transform-origin:left;transform:scaleX(0);box-shadow:0 0 10px rgba(198,255,61,.6);pointer-events:none}
 
@@ -580,12 +609,12 @@ footer{border-top:1px solid var(--border);padding:52px 0 40px;margin-top:20px}
 <!-- NAV -->
 <nav class="nav" id="nav"><div class="container nav-inner">
   <a href="#top" class="nav-logo"><img src="logo.svg" alt="Gen Go" class="logo-img"/></a>
-  <div class="nav-links"><a href="#tools">Возможности</a><a href="#how">Как это работает</a><a href="#studio">Форматы</a><a href="#pricing">Тарифы</a><a href="#faq">Вопросы</a></div>
-  <div class="nav-actions"><a class="btn btn-ghost" href="#">Войти</a><a class="btn btn-primary nav-cta" href="#"><span class="full">Начать бесплатно</span><span class="short">Начать</span></a><button class="nav-burger" id="burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="mMenu"><span></span><span></span><span></span></button></div>
+  <div class="nav-links"><a href="#tools">Features</a><a href="#how">How it works</a><a href="#studio">Formats</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a></div>
+  <div class="nav-actions"><div class="lang"><button class="lang-btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language"><svg class="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5c2.6 2.6 3.9 5.8 3.9 9.5s-1.3 6.9-3.9 9.5c-2.6-2.6-3.9-5.8-3.9-9.5S9.4 5.1 12 2.5z"/></svg><span class="lang-cur">EN</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="lang-menu" role="listbox" aria-label="Language"><li><button type="button" role="option" data-lang="en" aria-selected="false"><span class="code">EN</span><span class="nm">English</span><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></li><li><button type="button" role="option" data-lang="uk" aria-selected="false"><span class="code">UK</span><span class="nm">Українська</span><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></li><li><button type="button" role="option" data-lang="ru" aria-selected="false"><span class="code">RU</span><span class="nm">Русский</span><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></li></ul></div><a class="btn btn-ghost" href="#">Log in</a><a class="btn btn-primary nav-cta" href="#"><span class="full">Start for free</span><span class="short">Start</span></a><button class="nav-burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mMenu"><span></span><span></span><span></span></button></div>
 </div></nav>
 <div class="m-menu" id="mMenu" aria-hidden="true">
-  <div class="m-links"><a href="#tools">Возможности</a><a href="#how">Как это работает</a><a href="#studio">Форматы</a><a href="#pricing">Тарифы</a><a href="#faq">Вопросы</a></div>
-  <div class="m-actions"><a class="btn btn-primary" href="#">Начать бесплатно</a><a class="btn btn-ghost" href="#">Войти</a></div>
+  <div class="m-links"><a href="#tools">Features</a><a href="#how">How it works</a><a href="#studio">Formats</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a></div>
+  <div class="m-actions"><a class="btn btn-primary" href="#">Start for free</a><a class="btn btn-ghost" href="#">Log in</a></div>
 </div>
 <span id="top"></span>
 
@@ -593,17 +622,17 @@ footer{border-top:1px solid var(--border);padding:52px 0 40px;margin-top:20px}
 <header class="hero">
   <img class="hero-bg" src="assets/v4/hero-bg.webp" alt="" />
   <div class="hero-panel">
-    <div class="ph-head"><span>Сервис Gen Go</span><div class="ph-dots"><i></i><i></i><i></i></div></div>
+    <div class="ph-head"><span>Gen Go service</span><div class="ph-dots"><i></i><i></i><i></i></div></div>
     <div class="gif-slot" id="gifSlot">
       <!-- сюда подключим зацикленную гифку флоу интерфейса -->
-      <div class="shimmer"><div class="ic">▶</div>предпросмотр интерфейса</div>
+      <div class="shimmer"><div class="ic">▶</div>interface preview</div>
     </div>
   </div>
   <div class="container"><div class="hero-copy">
-    <span class="eyebrow"><span class="bolt">⚡</span> 12 лет опыта в iGaming-креативах</span>
-    <h1>Креативы для казино и беттинга, <span class="hl">которые конвертят</span></h1>
-    <p class="hero-lead">Быстро, дёшево и чтобы конвертило: генерация, ресайзы и локализация рекламных креативов в одном сервисе.</p>
-    <div class="hero-cta"><a class="btn btn-primary" href="#">Попробовать бесплатно</a><a class="btn btn-ghost" href="#how">Как это работает</a></div>
+    <span class="eyebrow"><span class="bolt">⚡</span> 12 years in iGaming creatives</span>
+    <h1>Casino and&nbsp;betting creatives <span class="hl">that actually&nbsp;convert</span></h1>
+    <p class="hero-lead">Fast, cheap and built to convert: generation, resizing and localization of ad creatives in one service.</p>
+    <div class="hero-cta"><a class="btn btn-primary" href="#">Try for free</a><a class="btn btn-ghost" href="#how">How it works</a></div>
   </div></div>
   <!-- мобильный hero: девушка отдельным слоем (на десктопе не загружается — подставляется пустой gif) -->
   <picture class="hero-girl"><source media="(max-width:860px)" srcset="assets/v4/hero-girl-glow.webp" /><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="1224" height="1019" /></picture>
@@ -615,21 +644,21 @@ footer{border-top:1px solid var(--border);padding:52px 0 40px;margin-top:20px}
 <!-- HOW / 3 STEPS -->
 <section class="how" id="how">
   <div class="container">
-    <div class="section-head reveal"><span class="eyebrow">Как это работает</span><h2>От оффера до пакета рекламных креативов</h2><p>Не нужно уметь дизайнить. Опишите оффер словами — Gen Go соберёт готовый к заливу креатив.</p></div>
+    <div class="section-head reveal"><span class="eyebrow">How it works</span><h2>From offer to a pack of ad creatives</h2><p>No design skills needed. Describe your offer in words — Gen Go builds a launch-ready creative.</p></div>
     <div class="steps-row">
       <div class="step act reveal">
         <div class="step-top"><div class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></div><span class="num" data-n="01">01</span></div>
-        <h4>Опишите оффер</h4><p>Выберите вертикаль, бонус и настроение — или начните с готового пресета.</p>
-        <div class="step-demo"><div class="demo-input"><span class="tx">Слот Book of Gold, бонус 200%</span><span class="caret"></span><span class="go">→</span></div></div>
+        <h4>Describe your offer</h4><p>Pick a vertical, bonus and mood — or start from a ready-made preset.</p>
+        <div class="step-demo"><div class="demo-input"><span class="tx">Book of Gold slot, 200% bonus</span><span class="caret"></span><span class="go">→</span></div></div>
       </div>
       <div class="step reveal">
         <div class="step-top"><div class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.4 6.1L21 11l-6.6 1.9L12 19l-2.4-6.1L3 11l6.6-1.9L12 3z"/></svg></div><span class="num" data-n="02">02</span></div>
-        <h4>Получите вариации</h4><p>Gen Go соберёт пакет креативов в разных стилях. Выбирайте лучшие.</p>
-        <div class="step-demo"><div class="demo-thumbs"><i></i><i></i><i></i><i></i><span>+12 вариаций</span></div></div>
+        <h4>Get variations</h4><p>Gen Go builds a pack of creatives in different styles. Pick the best.</p>
+        <div class="step-demo"><div class="demo-thumbs"><i></i><i></i><i></i><i></i><span>+12 variations</span></div></div>
       </div>
       <div class="step reveal">
         <div class="step-top"><div class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg></div><span class="num" data-n="03">03</span></div>
-        <h4>Разложите на форматы</h4><p>Ресайз в один клик под все площадки и ГЕО. Скачивайте пакетом.</p>
+        <h4>Split into formats</h4><p>One-click resizes for every platform and GEO. Download as a pack.</p>
         <div class="step-demo"><div class="demo-chips"><span>1:1</span><span>4:5</span><span>9:16</span><span>16:9</span><span>+61</span></div></div>
       </div>
     </div>
@@ -639,7 +668,7 @@ footer{border-top:1px solid var(--border);padding:52px 0 40px;margin-top:20px}
 <!-- STUDIO -->
 <section class="studio" id="studio">
   <div class="container">
-    <div class="studio-badge reveal"><span><span class="ok">✓</span><span class="lbl"><span data-count="65">65</span> ресайзов <span class="w">из одного клика</span></span></span></div>
+    <div class="studio-badge reveal"><span><span class="ok">✓</span><span class="lbl"><span data-count="65">65</span> resizes <span class="w">in one click</span></span></span></div>
     <div class="studio-stage">
       <div class="decor" id="decor">
       <div class="frag sidebar">
@@ -653,9 +682,9 @@ footer{border-top:1px solid var(--border);padding:52px 0 40px;margin-top:20px}
         <i><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.83" stroke-linecap="round" stroke-linejoin="round"><path d="M20.17 1.83 10.08 11.92m0 0L1.83 8.25 20.17 1.83l-6.42 18.34-3.67-8.25Z"/></svg></i>
         <i><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.83" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19.25a8.25 8.25 0 1 0 0-16.5 8.25 8.25 0 0 0 0 16.5Z"/><path d="M11 6.42V11l2.75 1.83"/></svg></i>
       </div>
-      <div class="frag brief"><div class="t"><span class="ic"></span>Загрузить ТЗ</div><small>ИИ прочитает бриф</small><div class="in">Новинка, акция, скидка, спецпредложение…</div></div>
-      <div class="frag resizes"><div class="t">Выбор ресайзов</div><small>Отметьте нужные форматы</small><div class="chips" id="chips"><span class="chip" data-r="1x1">1:1</span><span class="chip" data-r="4x5">4:5</span><span class="chip" data-r="9x16">9:16</span><span class="chip" data-r="16x9">16:9</span><span class="chip" data-r="3x1">3:1</span></div></div>
-      <div class="frag gen"><div class="gbtn">Сгенерировать · 30</div><div class="st"><i></i>Готово · синхронизировано</div></div>
+      <div class="frag brief"><div class="t"><span class="ic"></span>Upload a brief</div><small>AI reads the brief</small><div class="in">New launch, promo, discount, special offer…</div></div>
+      <div class="frag resizes"><div class="t">Choose resizes</div><small>Select the formats you need</small><div class="chips" id="chips"><span class="chip" data-r="1x1">1:1</span><span class="chip" data-r="4x5">4:5</span><span class="chip" data-r="9x16">9:16</span><span class="chip" data-r="16x9">16:9</span><span class="chip" data-r="3x1">3:1</span></div></div>
+      <div class="frag gen"><div class="gbtn">Generate · 30</div><div class="st"><i></i>Done · synced</div></div>
       </div><!-- /decor -->
       <div class="rb" id="rb">
         <div class="rb-bg"></div>
@@ -672,46 +701,46 @@ footer{border-top:1px solid var(--border);padding:52px 0 40px;margin-top:20px}
 </section>
 
 <!-- CTA mini -->
-<section class="cta-mini reveal"><div class="container"><div class="cta-bar"><h3>12 лет опыта создания креативов в&nbsp;гемблинге&nbsp;— в&nbsp;одном сервисе</h3><a class="btn" href="#">Начать бесплатно</a></div></div></section>
+<section class="cta-mini reveal"><div class="container"><div class="cta-bar"><h3>12 years of crafting gambling creatives —&nbsp;in&nbsp;one service</h3><a class="btn" href="#">Start for free</a></div></div></section>
 
 <!-- TOOLS bento -->
 <section class="section" id="tools">
   <div class="container">
-    <div class="section-head reveal"><span class="eyebrow">Инструменты</span><h2>Пять инструментов. Один сервис.</h2><p>От статичного баннера до писем и playable-механик — весь рекламный стек iGaming в одном сервисе.</p></div>
+    <div class="section-head reveal"><span class="eyebrow">Tools</span><h2>Five tools. One service.</h2><p>From static banners to emails and playable mechanics — the whole iGaming ad stack in one service.</p></div>
     <div class="bento">
       <div class="bento-row r1">
         <div class="tile tile-banner reveal">
           <div class="glow"></div>
           <div class="content">
             <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
-            <h3>Баннер-генератор</h3><p>Статичные баннеры для соцсетей, ставок и рекламы — мастер-баннер и целый пакет ресайзов под каждый канал.</p>
-            <div class="chips"><span>65+ форматов</span><span>10 аспектов</span><span>ZIP-экспорт</span></div>
-            <div class="open-tool"><b>Открыть инструмент</b><span class="arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+            <h3>Banner generator</h3><p>Static banners for social, betting and ads — a master banner plus a full resize pack for every channel.</p>
+            <div class="chips"><span>65+ formats</span><span>10 aspect ratios</span><span>ZIP export</span></div>
+            <div class="open-tool"><b>Open tool</b><span class="arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
           </div>
-          <div class="accent"><div class="ag"></div><div class="num"><span data-count="65">65</span>+</div><small>готовых форматов</small></div>
+          <div class="accent"><div class="ag"></div><div class="num"><span data-count="65">65</span>+</div><small>ready formats</small></div>
         </div>
         <div class="tile reveal"><div class="glow"></div><div class="tile-inner">
           <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-          <h3>Лендинг-генератор</h3><p>Лендинги на основе баннера или с нуля — готовые вертикали, редактор текста, стилей и языков.</p>
-          <div class="chips"><span>из баннера</span><span>с нуля</span><span>мультиязычность</span></div>
-          <div class="open-tool"><b>Открыть инструмент</b><span class="arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+          <h3>Landing generator</h3><p>Landing pages from a banner or from scratch — ready verticals, text, style and language editor.</p>
+          <div class="chips"><span>from a banner</span><span>from scratch</span><span>multilingual</span></div>
+          <div class="open-tool"><b>Open tool</b><span class="arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
         </div></div>
       </div>
       <div class="bento-row r2">
-        <div class="tile soon-tile reveal"><div class="glow"></div><span class="soon">Скоро</span><div class="tile-inner">
+        <div class="tile soon-tile reveal"><div class="glow"></div><span class="soon">Soon</span><div class="tile-inner">
           <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="16" cy="11" r="1"/><circle cx="18.5" cy="13.5" r="1"/></svg></div>
-          <h3>Плейбл-реклама</h3><p>Интерактивные игровые баннеры под рекламные сети — механики, которые вовлекают ещё до клика.</p>
-          <div class="foot"><b>Скоро в Gen Go</b><span class="arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+          <h3>Playable ads</h3><p>Interactive game banners for ad networks — mechanics that engage users before the click.</p>
+          <div class="foot"><b>Coming to Gen Go</b><span class="arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
         </div></div>
-        <div class="tile soon-tile reveal"><div class="glow"></div><span class="soon">Скоро</span><div class="tile-inner">
+        <div class="tile soon-tile reveal"><div class="glow"></div><span class="soon">Soon</span><div class="tile-inner">
           <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="14" height="14" rx="2"/><path d="m16 9 6-3v12l-6-3"/></svg></div>
-          <h3>Конструктор видео</h3><p>Скринкасты, персонажи, липсинк и музыка — короткие видеокреативы под Stories и Reels.</p>
-          <div class="foot"><b>Скоро в Gen Go</b><span class="arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+          <h3>Video builder</h3><p>Screencasts, characters, lip-sync and music — short video creatives for Stories and Reels.</p>
+          <div class="foot"><b>Coming to Gen Go</b><span class="arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
         </div></div>
-        <div class="tile soon-tile reveal"><div class="glow"></div><span class="soon">Скоро</span><div class="tile-inner">
+        <div class="tile soon-tile reveal"><div class="glow"></div><span class="soon">Soon</span><div class="tile-inner">
           <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7.5 8.5 6 8.5-6"/></svg></div>
-          <h3>Генератор писем</h3><p>Письма для email-рассылок с живым предпросмотром и готовыми блоками под оффер.</p>
-          <div class="foot"><b>Скоро в Gen Go</b><span class="arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+          <h3>Email generator</h3><p>Emails for newsletters with a live preview and ready-made blocks for your offer.</p>
+          <div class="foot"><b>Coming to Gen Go</b><span class="arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
         </div></div>
       </div>
     </div>
@@ -722,15 +751,15 @@ footer{border-top:1px solid var(--border);padding:52px 0 40px;margin-top:20px}
 <section class="section compare">
   <div class="cglow a"></div><div class="cglow b"></div>
   <div class="container">
-    <div class="section-head reveal"><span class="eyebrow">Есть разница</span><h2 class="h2-wrap">Конвертит лучше ChatGPT, стоит меньше, чем ваша дизайн&#8209;команда</h2><p>Один и тот же оффер, две реальности. Разница — в конверсии, скорости связок и деньгах на дизайне.</p></div>
+    <div class="section-head reveal"><span class="eyebrow">See the difference</span><h2 class="h2-wrap">Converts better than ChatGPT, costs less than your design&nbsp;team</h2><p>Same offer, two realities. The difference is in conversion, campaign speed and design spend.</p></div>
     <div class="cmp-cards">
-      <div class="cmp reveal"><h3>Без Gen Go</h3><div class="sub">Дизайнер, фрилансер и бесконечные правки на каждый ресайз</div>
-        <div class="list"><div class="li"><span class="dot"></span><b>Дизайнер не знает iGaming — креативы не конвертят</b></div><div class="li"><span class="dot"></span><b>Пакет креативов ждёте по 3–5 дней</b></div><div class="li"><span class="dot"></span><b>Каждый ресайз — отдельная задача</b></div><div class="li"><span class="dot"></span><b>Мало гипотез — тестируете вслепую</b></div></div>
-        <div class="price" style="color:var(--t2)">$500+<span>/мес</span></div>
+      <div class="cmp reveal"><h3>Without Gen Go</h3><div class="sub">Designers, freelancers and endless edits on every resize</div>
+        <div class="list"><div class="li"><span class="dot"></span><b>Designers don’t get iGaming — creatives don’t convert</b></div><div class="li"><span class="dot"></span><b>A creative pack takes 3–5 days</b></div><div class="li"><span class="dot"></span><b>Every resize is a separate task</b></div><div class="li"><span class="dot"></span><b>Few hypotheses — you test blind</b></div></div>
+        <div class="price" style="color:var(--t2)">$500+<span>/mo</span></div>
       </div>
-      <div class="cmp pos reveal"><h3>С Gen Go</h3><div class="sub" style="color:#33461a">Один инструмент — весь продакшн под iGaming</div>
-        <div class="list"><div class="li"><span class="dot"></span><b>12 лет опыта в гемблинге — креативы, которые конвертят</b></div><div class="li"><span class="dot"></span><b>Десятки креативов за вечер, залив с утра</b></div><div class="li"><span class="dot"></span><b>Все ресайзы — в один клик, без правок</b></div><div class="li"><span class="dot"></span><b>Больше гипотез — быстрее связка</b></div></div>
-        <div class="price">$19<span>/мес</span></div>
+      <div class="cmp pos reveal"><h3>With Gen Go</h3><div class="sub" style="color:#33461a">One tool for all your iGaming production</div>
+        <div class="list"><div class="li"><span class="dot"></span><b>12 years in gambling — creatives that convert</b></div><div class="li"><span class="dot"></span><b>Dozens of creatives overnight, live by morning</b></div><div class="li"><span class="dot"></span><b>Every resize in one click, no edits</b></div><div class="li"><span class="dot"></span><b>More hypotheses — faster winning campaigns</b></div></div>
+        <div class="price">$19<span>/mo</span></div>
       </div>
     </div>
   </div>
@@ -739,52 +768,52 @@ footer{border-top:1px solid var(--border);padding:52px 0 40px;margin-top:20px}
 <!-- PRICING -->
 <section class="section" id="pricing">
   <div class="container">
-    <div class="section-head reveal"><span class="eyebrow">Тарифы</span><h2>Платите за кредиты, а не за место</h2><p>Кредиты начисляются каждый месяц и тратятся на генерации и ресайзы. Неиспользованные — переносятся.</p></div>
+    <div class="section-head reveal"><span class="eyebrow">Pricing</span><h2>Pay for credits, not for seats</h2><p>Credits are added monthly and spent on generations and resizes. Unused credits roll over.</p></div>
     <div class="plans">
       <div class="plan reveal">
-        <div class="phead"><span class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span><div><div class="pname">СТАРТ</div><div class="ptag">Для соло-байера и первых тестов</div></div></div>
-        <div class="price"><span class="cur">$</span>19<span class="per">/мес</span></div>
-        <div class="credits"><span class="coin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg></span><div><b>500 кредитов / мес</b><small>≈ 120 баннеров или 250 ресайзов</small></div></div><div class="sep"></div>
-        <ul><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>До 2 генераций параллельно</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Все форматы и ресайзы</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Пресеты под все вертикали</li><li class="no"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span>Приоритетная очередь</li></ul>
-        <a class="btn btn-out" href="#">Начать со Старта</a>
+        <div class="phead"><span class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span><div><div class="pname">STARTER</div><div class="ptag">For solo buyers and first tests</div></div></div>
+        <div class="price"><span class="cur">$</span>19<span class="per">/mo</span></div>
+        <div class="credits"><span class="coin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg></span><div><b>500 credits / mo</b><small>≈ 120 banners or 250 resizes</small></div></div><div class="sep"></div>
+        <ul><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Up to 2 parallel generations</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>All formats and resizes</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Presets for every vertical</li><li class="no"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span>Priority queue</li></ul>
+        <a class="btn btn-out" href="#">Start with Starter</a>
       </div>
       <div class="plan pop reveal">
-        <span class="badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z"/></svg>Самый популярный</span>
-        <div class="phead"><span class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/></svg></span><div><div class="pname">ПРОФИ</div><div class="ptag">Для активного байера и потока связок</div></div></div>
-        <div class="price"><span class="cur">$</span>59<span class="per">/мес</span></div>
-        <div class="credits"><span class="coin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg></span><div><b>1 500 кредитов / мес</b><small>≈ 375 баннеров или 750 ресайзов</small></div></div><div class="sep"></div>
-        <ul><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>До 6 генераций параллельно</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Приоритетная очередь генерации</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Ранний доступ к новым моделям</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Перенос кредитов на след. месяц</li></ul>
-        <a class="btn btn-primary" href="#">Выбрать Профи</a>
+        <span class="badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z"/></svg>Most popular</span>
+        <div class="phead"><span class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/></svg></span><div><div class="pname">PRO</div><div class="ptag">For active buyers running many campaigns</div></div></div>
+        <div class="price"><span class="cur">$</span>59<span class="per">/mo</span></div>
+        <div class="credits"><span class="coin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg></span><div><b>1,500 credits / mo</b><small>≈ 375 banners or 750 resizes</small></div></div><div class="sep"></div>
+        <ul><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Up to 6 parallel generations</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Priority generation queue</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Early access to new models</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Credits roll over to next month</li></ul>
+        <a class="btn btn-primary" href="#">Choose Pro</a>
       </div>
       <div class="plan reveal">
-        <div class="phead"><span class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><div><div class="pname">СТУДИЯ</div><div class="ptag">Для команды и максимального объёма</div></div></div>
-        <div class="price"><span class="cur">$</span>139<span class="per">/мес</span></div>
-        <div class="credits"><span class="coin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg></span><div><b>4 000 кредитов / мес</b><small>≈ 1 000 баннеров · лучшая цена</small></div></div><div class="sep"></div>
-        <ul><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>До 12 генераций параллельно</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>До 5 пользователей и общий баланс</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Роли и права доступа</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Приоритетная поддержка</li></ul>
-        <a class="btn btn-out" href="#">Выбрать Студию</a>
+        <div class="phead"><span class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><div><div class="pname">STUDIO</div><div class="ptag">For teams and maximum volume</div></div></div>
+        <div class="price"><span class="cur">$</span>139<span class="per">/mo</span></div>
+        <div class="credits"><span class="coin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg></span><div><b>4,000 credits / mo</b><small>≈ 1,000 banners · best value</small></div></div><div class="sep"></div>
+        <ul><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Up to 12 parallel generations</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Up to 5 users and a shared balance</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Roles and access rights</li><li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Priority support</li></ul>
+        <a class="btn btn-out" href="#">Choose Studio</a>
       </div>
     </div>
-    <div class="plans-dots" id="plansDots" role="tablist" aria-label="Тарифы"><button type="button" aria-label="Старт"></button><button type="button" aria-label="Профи"></button><button type="button" aria-label="Студия"></button></div>
-    <div class="price-banner reveal"><div><h4>Забирай по спеццене — старт уже сегодня</h4><p>Годовая оплата выгоднее на 20%. Первый креатив — бесплатно, без карты.</p></div><a class="btn" href="#">Забрать спеццену</a></div>
+    <div class="plans-dots" id="plansDots" role="tablist" aria-label="Pricing"><button type="button" aria-label="Starter"></button><button type="button" aria-label="Pro"></button><button type="button" aria-label="Studio"></button></div>
+    <div class="price-banner reveal"><div><h4>Grab the special price — start today</h4><p>Annual billing saves 20%. Your first creative is free, no card needed.</p></div><a class="btn" href="#">Get the deal</a></div>
   </div>
 </section>
 
 <!-- FAQ -->
 <section class="section" id="faq">
   <div class="container">
-    <div class="section-head reveal"><span class="eyebrow">Вопросы</span><h2>Отвечаем на главное</h2></div>
+    <div class="section-head reveal"><span class="eyebrow">FAQ</span><h2>The essentials, answered</h2></div>
     <div class="faq reveal">
-      <details open><summary>Что такое кредиты и на что они тратятся?</summary><div class="a"><p>Кредиты — внутренняя валюта Gen Go. Они начисляются по вашему тарифу каждый месяц и тратятся на генерацию баннеров, ресайзы и сборку лендингов. Неиспользованные кредиты на тарифах Профи и Студия переносятся на следующий месяц.</p></div></details>
-      <details><summary>Насколько креативы подходят под гемблинг и беттинг?</summary><div class="a"><p>Gen Go построен на 12 годах опыта создания креативов для гемблинга и беттинга: слоты, казино, спорт. Пресеты сцен и стилей учитывают специфику вертикалей и требования рекламных сетей — креативы делаются под конверсию, а не «для красоты».</p></div></details>
-      <details><summary>Нужны ли навыки дизайна?</summary><div class="a"><p>Нет. Опишите оффер словами — Gen Go соберёт готовый к заливу креатив. Любую вариацию можно доработать промтом.</p></div></details>
-      <details><summary>Можно ли делать ресайзы под разные площадки?</summary><div class="a"><p>Да, 65+ форматов и 10 аспектов. Ресайз пакетом в один клик, экспорт ZIP.</p></div></details>
-      <details><summary>Что с оплатой и можно ли отменить?</summary><div class="a"><p>Помесячная оплата, годовая — выгоднее на 20%. Отменить можно в любой момент, без скрытых условий.</p></div></details>
+      <details open><summary>What are credits and what are they spent on?</summary><div class="a"><p>Credits are Gen Go’s internal currency. They are added every month according to your plan and spent on generating banners, resizes and building landing pages. Unused credits on the Pro and Studio plans roll over to the next month.</p></div></details>
+      <details><summary>How well do the creatives fit gambling and betting?</summary><div class="a"><p>Gen Go is built on 12 years of creating creatives for gambling and betting: slots, casino, sports. Scene and style presets account for each vertical and ad network requirements — creatives are made to convert, not just to look pretty.</p></div></details>
+      <details><summary>Do I need design skills?</summary><div class="a"><p>No. Describe your offer in words — Gen Go builds a launch-ready creative. Any variation can be refined with a prompt.</p></div></details>
+      <details><summary>Can I make resizes for different platforms?</summary><div class="a"><p>Yes — 65+ formats and 10 aspect ratios. Batch resize in one click, ZIP export.</p></div></details>
+      <details><summary>How does billing work, and can I cancel?</summary><div class="a"><p>Monthly billing, or annual — 20% cheaper. Cancel anytime, no hidden terms.</p></div></details>
     </div>
   </div>
 </section>
 
 <!-- FINAL CTA -->
-<section class="section"><div class="container"><div class="cta-final reveal"><div class="cta-glow g1"></div><div class="cta-glow g2"></div><div class="cta-content"><span class="eyebrow">Готовы масштабировать связки?</span><h2>Первый креатив — бесплатно.</h2><p>Кредиты начисляются каждый месяц и тратятся на генерации и ресайзы. Неиспользованные — переносятся на следующий месяц.</p><div class="cta-btns"><a class="btn btn-primary" href="#">Начать бесплатно →</a><a class="btn btn-ghost" href="#pricing">Смотреть тарифы</a></div><svg class="cta-word" viewBox="29 222 4279 796" aria-hidden="true" focusable="false">
+<section class="section"><div class="container"><div class="cta-final reveal"><div class="cta-glow g1"></div><div class="cta-glow g2"></div><div class="cta-content"><span class="eyebrow">Ready to scale your campaigns?</span><h2>Your first creative is free.</h2><p>Credits are added monthly and spent on generations and resizes. Unused credits roll over to the next month.</p><div class="cta-btns"><a class="btn btn-primary" href="#">Start for free →</a><a class="btn btn-ghost" href="#pricing">See pricing</a></div><svg class="cta-word" viewBox="29 222 4279 796" aria-hidden="true" focusable="false">
         <defs>
           <path id="cwGen" d="M515 762V600H919V995H756L745 905Q744 907 742 908Q696 957 626.0 984.5Q556 1012 462 1012Q374 1012 297.0 986.5Q220 961 161.0 911.5Q102 862 68.5 789.0Q35 716 35.0 620.0Q35 524 68.5 451.0Q102 378 162.5 328.5Q223 279 302.5 253.5Q382 228 474 228Q601 228 692.5 266.0Q784 304 840.0 371.0Q896 438 912 525H678Q669 492 640.5 468.5Q612 445 570.0 432.5Q528 420 476 420Q412 420 365.5 442.0Q319 464 294.0 508.0Q269 552 269.0 620.0Q269 688 296.5 734.0Q324 780 375.5 803.0Q427 826 497 826Q565 826 618 808Q665 792 695 762Z M1325.0 1012Q1219.0 1012 1136.0 974.0Q1053.0 936 1005.0 867.0Q957.0 798 957.0 706Q957.0 616 1003.5 548.0Q1050.0 480 1130.5 442.5Q1211.0 405 1311.0 405Q1416.0 405 1490.0 449.5Q1564.0 494 1603.5 576.5Q1643.0 659 1643.0 771H1210.0Q1211.0 773 1212.0 774Q1234.0 809 1280.0 827.5Q1326.0 846 1394.0 846Q1456.0 846 1517.0 831.0Q1578.0 816 1628.0 787V929Q1567.0 969 1491.5 990.5Q1416.0 1012 1325.0 1012ZM1197.0 640H1434.0Q1430.0 628 1424.0 618Q1408.0 591 1381.5 577.0Q1355.0 563 1319.0 563Q1278.0 563 1249.0 579.0Q1220.0 595 1205.0 623Q1200.0 631 1197.0 640Z M1657.0 422H1886.0L1905.0 536Q1907.0 533 1909.0 530Q1948.0 468 2005.0 436.5Q2062.0 405 2129.0 405Q2213.0 405 2271.0 438.0Q2329.0 471 2360.5 531.5Q2392.0 592 2392.0 673V995H2162.0V706Q2162.0 650 2132.5 620.0Q2103.0 590 2049.0 590Q2011.0 590 1983.0 606.0Q1955.0 622 1940.0 651.0Q1925.0 680 1925.0 721V995H1696.0V624Z"/>
           <path id="cwGo" d="M3114.0 762V600H3518.0V995H3355.0L3344.0 905Q3343.0 907 3341.0 908Q3295.0 957 3225.0 984.5Q3155.0 1012 3061.0 1012Q2973.0 1012 2896.0 986.5Q2819.0 961 2760.0 911.5Q2701.0 862 2667.5 789.0Q2634.0 716 2634.0 620.0Q2634.0 524 2667.5 451.0Q2701.0 378 2761.5 328.5Q2822.0 279 2901.5 253.5Q2981.0 228 3073.0 228Q3200.0 228 3291.5 266.0Q3383.0 304 3439.0 371.0Q3495.0 438 3511.0 525H3277.0Q3268.0 492 3239.5 468.5Q3211.0 445 3169.0 432.5Q3127.0 420 3075.0 420Q3011.0 420 2964.5 442.0Q2918.0 464 2893.0 508.0Q2868.0 552 2868.0 620.0Q2868.0 688 2895.5 734.0Q2923.0 780 2974.5 803.0Q3026.0 826 3096.0 826Q3164.0 826 3217.0 808Q3264.0 792 3294.0 762Z M3929.0 1012Q3818.0 1012 3734.0 974.0Q3650.0 936 3603.0 867.5Q3556.0 799 3556.0 709Q3556.0 617 3603.0 548.5Q3650.0 480 3734.0 442.5Q3818.0 405 3930.0 405Q4041.0 405 4125.0 442.5Q4209.0 480 4255.5 548.5Q4302.0 617 4302.0 709Q4302.0 799 4255.5 867.5Q4209.0 936 4125.0 974.0Q4041.0 1012 3929.0 1012ZM3930.0 844Q3975.0 844 4006.5 828.0Q4038.0 812 4054.5 781.5Q4071.0 751 4071.0 709Q4071.0 666 4054.5 635.5Q4038.0 605 4006.5 589.0Q3975.0 573 3930.0 573Q3885.0 573 3853.0 589.0Q3821.0 605 3804.5 635.5Q3788.0 666 3788.0 708Q3788.0 751 3804.5 781.5Q3821.0 812 3853.0 828.0Q3885.0 844 3930.0 844Z"/>
@@ -816,24 +845,94 @@ footer{border-top:1px solid var(--border);padding:52px 0 40px;margin-top:20px}
 
 <!-- FOOTER -->
 <footer><div class="container foot">
-  <div><div class="nav-logo" style="margin-bottom:12px"><img src="logo.svg" alt="Gen Go" class="logo-img"/></div><div>ИИ-генератор рекламных креативов<br/>для казино и беттинга.</div></div>
-  <div class="foot-cols"><div><b style="color:var(--t2)">Продукт</b><a href="#tools">Инструменты</a><a href="#studio">Форматы</a><a href="#pricing">Тарифы</a></div><div><b style="color:var(--t2)">Компания</b><a href="#">О нас</a><a href="#faq">FAQ</a><a href="#">Контакты</a></div></div>
-</div><div class="container" style="margin-top:36px;color:var(--t3);font-size:13px">© 2026 Gen Go. 18+ Играйте ответственно.</div></footer>
+  <div><div class="nav-logo" style="margin-bottom:12px"><img src="logo.svg" alt="Gen Go" class="logo-img"/></div><div>AI ad creative generator<br/>for casino and betting.</div></div>
+  <div class="foot-cols"><div><b style="color:var(--t2)">Product</b><a href="#tools">Tools</a><a href="#studio">Formats</a><a href="#pricing">Pricing</a></div><div><b style="color:var(--t2)">Company</b><a href="#">About us</a><a href="#faq">FAQ</a><a href="#">Contacts</a></div></div>
+</div><div class="container foot-bottom"><span>© 2026 Gen Go. 18+ Play responsibly.</span><div class="lang lang-up"><button class="lang-btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language"><svg class="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5c2.6 2.6 3.9 5.8 3.9 9.5s-1.3 6.9-3.9 9.5c-2.6-2.6-3.9-5.8-3.9-9.5S9.4 5.1 12 2.5z"/></svg><span class="lang-cur">EN</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="lang-menu" role="listbox" aria-label="Language"><li><button type="button" role="option" data-lang="en" aria-selected="false"><span class="code">EN</span><span class="nm">English</span><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></li><li><button type="button" role="option" data-lang="uk" aria-selected="false"><span class="code">UK</span><span class="nm">Українська</span><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></li><li><button type="button" role="option" data-lang="ru" aria-selected="false"><span class="code">RU</span><span class="nm">Русский</span><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></li></ul></div></div></footer>
 
 <script>
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer=matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-// ===== hero: заголовок разбивается на слова для поочерёдного появления =====
-(function(){
-  const h1=document.querySelector('.hero h1');if(!h1)return;
+// ===== hero: заголовок разбивается на слова для поочерёдного появления (перезапускается при смене языка) =====
+function splitHeroTitle(h1){
   let i=0;
-  const wrap=(text,cls)=>text.split(/(\s+)/).map(t=>{
+  // делим только по обычным пробелам: неразрывный пробел держит пару слов вместе (EN: «and betting»)
+  const wrap=(text,cls)=>text.split(/([ \t\r\n]+)/).map(t=>{
     if(!t)return '';
-    if(/^\s+$/.test(t))return ' ';
+    if(/^[ \t\r\n]+$/.test(t))return ' ';
     return `<span class="w${cls?' '+cls:''}"><span style="--i:${i++}">${t}</span></span>`;
   }).join('');
   h1.innerHTML=[...h1.childNodes].map(n=>n.nodeType===3?wrap(n.textContent):wrap(n.textContent,n.className)).join('');
+}
+
+// ===== i18n: английский — исходный текст страницы, украинский и русский подставляются из словаря =====
+const I18N={"Features": {"ru": "Возможности", "uk": "Можливості"}, "How it works": {"ru": "Как это работает", "uk": "Як це працює"}, "Formats": {"ru": "Форматы", "uk": "Формати"}, "Pricing": {"ru": "Тарифы", "uk": "Тарифи"}, "FAQ": {"ru": "Вопросы", "uk": "Питання"}, "Log in": {"ru": "Войти", "uk": "Увійти"}, "Start for free": {"ru": "Начать бесплатно", "uk": "Почати безкоштовно"}, "Start": {"ru": "Начать", "uk": "Почати"}, "Gen Go service": {"ru": "Сервис Gen Go", "uk": "Сервіс Gen Go"}, "interface preview": {"ru": "предпросмотр интерфейса", "uk": "прев’ю інтерфейсу"}, "12 years in iGaming creatives": {"ru": "12 лет опыта в iGaming-креативах", "uk": "12 років досвіду в iGaming-креативах"}, "Casino and betting creatives": {"ru": "Креативы для казино и беттинга,", "uk": "Креативи для казино та бетингу,"}, "that actually convert": {"ru": "которые конвертят", "uk": "які конвертять"}, "Fast, cheap and built to convert: generation, resizing and localization of ad creatives in one service.": {"ru": "Быстро, дёшево и чтобы конвертило: генерация, ресайзы и локализация рекламных креативов в одном сервисе.", "uk": "Швидко, дешево й щоб конвертило: генерація, ресайзи та локалізація рекламних креативів в одному сервісі."}, "Try for free": {"ru": "Попробовать бесплатно", "uk": "Спробувати безкоштовно"}, "From offer to a pack of ad creatives": {"ru": "От оффера до пакета рекламных креативов", "uk": "Від оферу до пакета рекламних креативів"}, "No design skills needed. Describe your offer in words — Gen Go builds a launch-ready creative.": {"ru": "Не нужно уметь дизайнить. Опишите оффер словами — Gen Go соберёт готовый к заливу креатив.", "uk": "Не потрібно вміти дизайнити. Опишіть офер словами — Gen Go збере готовий до заливу креатив."}, "Describe your offer": {"ru": "Опишите оффер", "uk": "Опишіть офер"}, "Pick a vertical, bonus and mood — or start from a ready-made preset.": {"ru": "Выберите вертикаль, бонус и настроение — или начните с готового пресета.", "uk": "Оберіть вертикаль, бонус і настрій — або почніть із готового пресету."}, "Book of Gold slot, 200% bonus": {"ru": "Слот Book of Gold, бонус 200%", "uk": "Слот Book of Gold, бонус 200%"}, "Get variations": {"ru": "Получите вариации", "uk": "Отримайте варіації"}, "Gen Go builds a pack of creatives in different styles. Pick the best.": {"ru": "Gen Go соберёт пакет креативов в разных стилях. Выбирайте лучшие.", "uk": "Gen Go збере пакет креативів у різних стилях. Обирайте найкращі."}, "+12 variations": {"ru": "+12 вариаций", "uk": "+12 варіацій"}, "Split into formats": {"ru": "Разложите на форматы", "uk": "Розкладіть на формати"}, "One-click resizes for every platform and GEO. Download as a pack.": {"ru": "Ресайз в один клик под все площадки и ГЕО. Скачивайте пакетом.", "uk": "Ресайз в один клік під усі майданчики та ГЕО. Завантажуйте пакетом."}, "resizes": {"ru": "ресайзов", "uk": "ресайзів"}, "in one click": {"ru": "из одного клика", "uk": "з одного кліку"}, "Upload a brief": {"ru": "Загрузить ТЗ", "uk": "Завантажити ТЗ"}, "AI reads the brief": {"ru": "ИИ прочитает бриф", "uk": "ШІ прочитає бриф"}, "New launch, promo, discount, special offer…": {"ru": "Новинка, акция, скидка, спецпредложение…", "uk": "Новинка, акція, знижка, спецпропозиція…"}, "Choose resizes": {"ru": "Выбор ресайзов", "uk": "Вибір ресайзів"}, "Select the formats you need": {"ru": "Отметьте нужные форматы", "uk": "Позначте потрібні формати"}, "Generate · 30": {"ru": "Сгенерировать · 30", "uk": "Згенерувати · 30"}, "Done · synced": {"ru": "Готово · синхронизировано", "uk": "Готово · синхронізовано"}, "12 years of crafting gambling creatives — in one service": {"ru": "12 лет опыта создания креативов в гемблинге — в одном сервисе", "uk": "12 років досвіду створення креативів у гемблінгу — в одному сервісі"}, "Tools": {"ru": "Инструменты", "uk": "Інструменти"}, "Five tools. One service.": {"ru": "Пять инструментов. Один сервис.", "uk": "П’ять інструментів. Один сервіс."}, "From static banners to emails and playable mechanics — the whole iGaming ad stack in one service.": {"ru": "От статичного баннера до писем и playable-механик — весь рекламный стек iGaming в одном сервисе.", "uk": "Від статичного банера до листів і playable-механік — увесь рекламний стек iGaming в одному сервісі."}, "Banner generator": {"ru": "Баннер-генератор", "uk": "Генератор банерів"}, "Static banners for social, betting and ads — a master banner plus a full resize pack for every channel.": {"ru": "Статичные баннеры для соцсетей, ставок и рекламы — мастер-баннер и целый пакет ресайзов под каждый канал.", "uk": "Статичні банери для соцмереж, ставок і реклами — мастер-банер і цілий пакет ресайзів під кожен канал."}, "65+ formats": {"ru": "65+ форматов", "uk": "65+ форматів"}, "10 aspect ratios": {"ru": "10 аспектов", "uk": "10 аспектів"}, "ZIP export": {"ru": "ZIP-экспорт", "uk": "ZIP-експорт"}, "Open tool": {"ru": "Открыть инструмент", "uk": "Відкрити інструмент"}, "ready formats": {"ru": "готовых форматов", "uk": "готових форматів"}, "Landing generator": {"ru": "Лендинг-генератор", "uk": "Генератор лендингів"}, "Landing pages from a banner or from scratch — ready verticals, text, style and language editor.": {"ru": "Лендинги на основе баннера или с нуля — готовые вертикали, редактор текста, стилей и языков.", "uk": "Лендинги на основі банера або з нуля — готові вертикалі, редактор тексту, стилів і мов."}, "from a banner": {"ru": "из баннера", "uk": "з банера"}, "from scratch": {"ru": "с нуля", "uk": "з нуля"}, "multilingual": {"ru": "мультиязычность", "uk": "мультимовність"}, "Soon": {"ru": "Скоро", "uk": "Скоро"}, "Playable ads": {"ru": "Плейбл-реклама", "uk": "Плейбл-реклама"}, "Interactive game banners for ad networks — mechanics that engage users before the click.": {"ru": "Интерактивные игровые баннеры под рекламные сети — механики, которые вовлекают ещё до клика.", "uk": "Інтерактивні ігрові банери під рекламні мережі — механіки, що залучають ще до кліку."}, "Coming to Gen Go": {"ru": "Скоро в Gen Go", "uk": "Скоро в Gen Go"}, "Video builder": {"ru": "Конструктор видео", "uk": "Конструктор відео"}, "Screencasts, characters, lip-sync and music — short video creatives for Stories and Reels.": {"ru": "Скринкасты, персонажи, липсинк и музыка — короткие видеокреативы под Stories и Reels.", "uk": "Скринкасти, персонажі, ліпсинк і музика — короткі відеокреативи під Stories і Reels."}, "Email generator": {"ru": "Генератор писем", "uk": "Генератор листів"}, "Emails for newsletters with a live preview and ready-made blocks for your offer.": {"ru": "Письма для email-рассылок с живым предпросмотром и готовыми блоками под оффер.", "uk": "Листи для email-розсилок із живим прев’ю та готовими блоками під офер."}, "See the difference": {"ru": "Есть разница", "uk": "Є різниця"}, "Converts better than ChatGPT, costs less than your design team": {"ru": "Конвертит лучше ChatGPT, стоит меньше, чем ваша дизайн‑команда", "uk": "Конвертить краще за ChatGPT, коштує менше, ніж ваша дизайн‑команда"}, "Same offer, two realities. The difference is in conversion, campaign speed and design spend.": {"ru": "Один и тот же оффер, две реальности. Разница — в конверсии, скорости связок и деньгах на дизайне.", "uk": "Один і той самий офер, дві реальності. Різниця — у конверсії, швидкості зв’язок і грошах на дизайн."}, "Without Gen Go": {"ru": "Без Gen Go", "uk": "Без Gen Go"}, "Designers, freelancers and endless edits on every resize": {"ru": "Дизайнер, фрилансер и бесконечные правки на каждый ресайз", "uk": "Дизайнер, фрилансер і нескінченні правки на кожен ресайз"}, "Designers don’t get iGaming — creatives don’t convert": {"ru": "Дизайнер не знает iGaming — креативы не конвертят", "uk": "Дизайнер не знає iGaming — креативи не конвертять"}, "A creative pack takes 3–5 days": {"ru": "Пакет креативов ждёте по 3–5 дней", "uk": "Пакет креативів чекаєте по 3–5 днів"}, "Every resize is a separate task": {"ru": "Каждый ресайз — отдельная задача", "uk": "Кожен ресайз — окреме завдання"}, "Few hypotheses — you test blind": {"ru": "Мало гипотез — тестируете вслепую", "uk": "Мало гіпотез — тестуєте наосліп"}, "/mo": {"ru": "/мес", "uk": "/міс"}, "With Gen Go": {"ru": "С Gen Go", "uk": "З Gen Go"}, "One tool for all your iGaming production": {"ru": "Один инструмент — весь продакшн под iGaming", "uk": "Один інструмент — увесь продакшн під iGaming"}, "12 years in gambling — creatives that convert": {"ru": "12 лет опыта в гемблинге — креативы, которые конвертят", "uk": "12 років у гемблінгу — креативи, які конвертять"}, "Dozens of creatives overnight, live by morning": {"ru": "Десятки креативов за вечер, залив с утра", "uk": "Десятки креативів за вечір, залив зранку"}, "Every resize in one click, no edits": {"ru": "Все ресайзы — в один клик, без правок", "uk": "Усі ресайзи — в один клік, без правок"}, "More hypotheses — faster winning campaigns": {"ru": "Больше гипотез — быстрее связка", "uk": "Більше гіпотез — швидше зв’язка"}, "Pay for credits, not for seats": {"ru": "Платите за кредиты, а не за место", "uk": "Платіть за кредити, а не за місце"}, "Credits are added monthly and spent on generations and resizes. Unused credits roll over.": {"ru": "Кредиты начисляются каждый месяц и тратятся на генерации и ресайзы. Неиспользованные — переносятся.", "uk": "Кредити нараховуються щомісяця й витрачаються на генерації та ресайзи. Невикористані — переносяться."}, "STARTER": {"ru": "СТАРТ", "uk": "СТАРТ"}, "For solo buyers and first tests": {"ru": "Для соло-байера и первых тестов", "uk": "Для соло-баєра та перших тестів"}, "500 credits / mo": {"ru": "500 кредитов / мес", "uk": "500 кредитів / міс"}, "≈ 120 banners or 250 resizes": {"ru": "≈ 120 баннеров или 250 ресайзов", "uk": "≈ 120 банерів або 250 ресайзів"}, "Up to 2 parallel generations": {"ru": "До 2 генераций параллельно", "uk": "До 2 генерацій паралельно"}, "All formats and resizes": {"ru": "Все форматы и ресайзы", "uk": "Усі формати та ресайзи"}, "Presets for every vertical": {"ru": "Пресеты под все вертикали", "uk": "Пресети під усі вертикалі"}, "Priority queue": {"ru": "Приоритетная очередь", "uk": "Пріоритетна черга"}, "Start with Starter": {"ru": "Начать со Старта", "uk": "Почати зі Старту"}, "Most popular": {"ru": "Самый популярный", "uk": "Найпопулярніший"}, "PRO": {"ru": "ПРОФИ", "uk": "ПРОФІ"}, "For active buyers running many campaigns": {"ru": "Для активного байера и потока связок", "uk": "Для активного баєра та потоку зв’язок"}, "1,500 credits / mo": {"ru": "1 500 кредитов / мес", "uk": "1 500 кредитів / міс"}, "≈ 375 banners or 750 resizes": {"ru": "≈ 375 баннеров или 750 ресайзов", "uk": "≈ 375 банерів або 750 ресайзів"}, "Up to 6 parallel generations": {"ru": "До 6 генераций параллельно", "uk": "До 6 генерацій паралельно"}, "Priority generation queue": {"ru": "Приоритетная очередь генерации", "uk": "Пріоритетна черга генерації"}, "Early access to new models": {"ru": "Ранний доступ к новым моделям", "uk": "Ранній доступ до нових моделей"}, "Credits roll over to next month": {"ru": "Перенос кредитов на след. месяц", "uk": "Перенесення кредитів на наст. місяць"}, "Choose Pro": {"ru": "Выбрать Профи", "uk": "Обрати Профі"}, "STUDIO": {"ru": "СТУДИЯ", "uk": "СТУДІЯ"}, "For teams and maximum volume": {"ru": "Для команды и максимального объёма", "uk": "Для команди та максимального обсягу"}, "4,000 credits / mo": {"ru": "4 000 кредитов / мес", "uk": "4 000 кредитів / міс"}, "≈ 1,000 banners · best value": {"ru": "≈ 1 000 баннеров · лучшая цена", "uk": "≈ 1 000 банерів · найкраща ціна"}, "Up to 12 parallel generations": {"ru": "До 12 генераций параллельно", "uk": "До 12 генерацій паралельно"}, "Up to 5 users and a shared balance": {"ru": "До 5 пользователей и общий баланс", "uk": "До 5 користувачів і спільний баланс"}, "Roles and access rights": {"ru": "Роли и права доступа", "uk": "Ролі та права доступу"}, "Priority support": {"ru": "Приоритетная поддержка", "uk": "Пріоритетна підтримка"}, "Choose Studio": {"ru": "Выбрать Студию", "uk": "Обрати Студію"}, "Starter": {"ru": "Старт", "uk": "Старт"}, "Pro": {"ru": "Профи", "uk": "Профі"}, "Studio": {"ru": "Студия", "uk": "Студія"}, "Grab the special price — start today": {"ru": "Забирай по спеццене — старт уже сегодня", "uk": "Забирай за спецціною — старт уже сьогодні"}, "Annual billing saves 20%. Your first creative is free, no card needed.": {"ru": "Годовая оплата выгоднее на 20%. Первый креатив — бесплатно, без карты.", "uk": "Річна оплата вигідніша на 20%. Перший креатив — безкоштовно, без картки."}, "Get the deal": {"ru": "Забрать спеццену", "uk": "Забрати спецціну"}, "The essentials, answered": {"ru": "Отвечаем на главное", "uk": "Відповідаємо на головне"}, "What are credits and what are they spent on?": {"ru": "Что такое кредиты и на что они тратятся?", "uk": "Що таке кредити й на що вони витрачаються?"}, "Credits are Gen Go’s internal currency. They are added every month according to your plan and spent on generating banners, resizes and building landing pages. Unused credits on the Pro and Studio plans roll over to the next month.": {"ru": "Кредиты — внутренняя валюта Gen Go. Они начисляются по вашему тарифу каждый месяц и тратятся на генерацию баннеров, ресайзы и сборку лендингов. Неиспользованные кредиты на тарифах Профи и Студия переносятся на следующий месяц.", "uk": "Кредити — внутрішня валюта Gen Go. Вони нараховуються за вашим тарифом щомісяця й витрачаються на генерацію банерів, ресайзи та збирання лендингів. Невикористані кредити на тарифах Профі та Студія переносяться на наступний місяць."}, "How well do the creatives fit gambling and betting?": {"ru": "Насколько креативы подходят под гемблинг и беттинг?", "uk": "Наскільки креативи підходять під гемблінг і бетинг?"}, "Gen Go is built on 12 years of creating creatives for gambling and betting: slots, casino, sports. Scene and style presets account for each vertical and ad network requirements — creatives are made to convert, not just to look pretty.": {"ru": "Gen Go построен на 12 годах опыта создания креативов для гемблинга и беттинга: слоты, казино, спорт. Пресеты сцен и стилей учитывают специфику вертикалей и требования рекламных сетей — креативы делаются под конверсию, а не «для красоты».", "uk": "Gen Go побудований на 12 роках досвіду створення креативів для гемблінгу та бетингу: слоти, казино, спорт. Пресети сцен і стилів враховують специфіку вертикалей і вимоги рекламних мереж — креативи робляться під конверсію, а не «для краси»."}, "Do I need design skills?": {"ru": "Нужны ли навыки дизайна?", "uk": "Чи потрібні навички дизайну?"}, "No. Describe your offer in words — Gen Go builds a launch-ready creative. Any variation can be refined with a prompt.": {"ru": "Нет. Опишите оффер словами — Gen Go соберёт готовый к заливу креатив. Любую вариацию можно доработать промтом.", "uk": "Ні. Опишіть офер словами — Gen Go збере готовий до заливу креатив. Будь-яку варіацію можна доопрацювати промтом."}, "Can I make resizes for different platforms?": {"ru": "Можно ли делать ресайзы под разные площадки?", "uk": "Чи можна робити ресайзи під різні майданчики?"}, "Yes — 65+ formats and 10 aspect ratios. Batch resize in one click, ZIP export.": {"ru": "Да, 65+ форматов и 10 аспектов. Ресайз пакетом в один клик, экспорт ZIP.", "uk": "Так, 65+ форматів і 10 аспектів. Ресайз пакетом в один клік, експорт ZIP."}, "How does billing work, and can I cancel?": {"ru": "Что с оплатой и можно ли отменить?", "uk": "Як щодо оплати і чи можна скасувати?"}, "Monthly billing, or annual — 20% cheaper. Cancel anytime, no hidden terms.": {"ru": "Помесячная оплата, годовая — выгоднее на 20%. Отменить можно в любой момент, без скрытых условий.", "uk": "Щомісячна оплата, річна — вигідніша на 20%. Скасувати можна будь-коли, без прихованих умов."}, "Ready to scale your campaigns?": {"ru": "Готовы масштабировать связки?", "uk": "Готові масштабувати зв’язки?"}, "Your first creative is free.": {"ru": "Первый креатив — бесплатно.", "uk": "Перший креатив — безкоштовно."}, "Credits are added monthly and spent on generations and resizes. Unused credits roll over to the next month.": {"ru": "Кредиты начисляются каждый месяц и тратятся на генерации и ресайзы. Неиспользованные — переносятся на следующий месяц.", "uk": "Кредити нараховуються щомісяця й витрачаються на генерації та ресайзи. Невикористані — переносяться на наступний місяць."}, "Start for free →": {"ru": "Начать бесплатно →", "uk": "Почати безкоштовно →"}, "See pricing": {"ru": "Смотреть тарифы", "uk": "Дивитися тарифи"}, "AI ad creative generator": {"ru": "ИИ-генератор рекламных креативов", "uk": "ШІ-генератор рекламних креативів"}, "for casino and betting.": {"ru": "для казино и беттинга.", "uk": "для казино та бетингу."}, "Product": {"ru": "Продукт", "uk": "Продукт"}, "Company": {"ru": "Компания", "uk": "Компанія"}, "About us": {"ru": "О нас", "uk": "Про нас"}, "Contacts": {"ru": "Контакты", "uk": "Контакти"}, "© 2026 Gen Go. 18+ Play responsibly.": {"ru": "© 2026 Gen Go. 18+ Играйте ответственно.", "uk": "© 2026 Gen Go. 18+ Грайте відповідально."}, "Open menu": {"ru": "Открыть меню", "uk": "Відкрити меню"}, "Close menu": {"ru": "Закрыть меню", "uk": "Закрити меню"}, "Language": {"ru": "Язык", "uk": "Мова"}};
+const I18N_META={"en": {"title": "Gen Go — AI ad creatives for casino and betting", "desc": "Gen Go is an AI service for casino and betting ad creatives, built on 12 years of gambling experience: creatives that convert, 65+ resizes and landing pages."}, "uk": {"title": "Gen Go — ШІ-генератор креативів для казино та бетингу", "desc": "Gen Go — ШІ-сервіс рекламних креативів для казино та бетингу, побудований на 12 роках досвіду в гемблінгу: креативи, які конвертять, 65+ ресайзів і лендинги."}, "ru": {"title": "Gen Go — ИИ-генератор креативов для казино и беттинга", "desc": "Gen Go — ИИ-сервис рекламных креативов для казино и беттинга, построенный на 12 годах опыта в гемблинге: креативы, которые конвертят, 65+ ресайзов и лендинги."}};
+const I18N_LANGS=['en','uk','ru'];
+let LANG='en';
+const i18nKey=x=>x.replace(/\u2011/g,'-').replace(/[\s\u00a0]+/g,' ').trim();
+const t=en=>LANG==='en'?en:((I18N[i18nKey(en)]||{})[LANG]||en);
+// типограф: короткие слова (предлоги, союзы, частицы) и числа держатся со следующим словом, тире — с предыдущим; так в конце строк не остаются «висячие» слова
+const TYPO_SHORT={
+  ru:'а|в|во|и|к|ко|о|об|с|со|у|на|не|ни|но|по|за|до|из|от|об|для|без|при|над|под|про|что|как|или',
+  uk:'а|в|у|і|й|з|із|зі|о|та|на|не|ні|по|за|до|від|для|без|при|над|під|про|що|як|або',
+  en:'a|an|the|of|to|in|on|at|by|for|and|or|no|as|is|per|via|your|our'
+};
+const TYPO_RE={};
+const typo=(str,l)=>{
+  if(!TYPO_RE[l])TYPO_RE[l]=new RegExp('(^|[\\s\\u00a0(«"„])('+TYPO_SHORT[l]+') ','giu');
+  let s=str;
+  for(let k=0;k<2;k++)s=s.replace(TYPO_RE[l],'$1$2 ');   // два прохода — для цепочек «и в», «and the»
+  return s.replace(/(\d) (?=[^\s—–-])/g,'$1 ').replace(/ ([—–]) /g,' $1 ');
+};
+const i18n=(function(){
+  const heroH1=document.querySelector('.hero h1'),heroSrc=heroH1?heroH1.innerHTML:'';
+  const collect=root=>{
+    const out=[],w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement.closest('script,style,svg')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
+    let n;while((n=w.nextNode())){const raw=n.nodeValue,k=i18nKey(raw);if(!I18N[k])continue;const m=raw.match(/^(\s*)([\s\S]*?)(\s*)$/);out.push({n,lead:m[1],en:m[2],trail:m[3],k});}
+    return out;
+  };
+  const apply=(items,l)=>items.forEach(it=>{it.n.nodeValue=it.lead+typo(l==='en'?it.en:(I18N[it.k][l]||it.en),l)+it.trail;});
+  const nodes=collect(document.body).filter(it=>!heroH1||!heroH1.contains(it.n));
+  const attrs=[...document.querySelectorAll('[aria-label],[alt]')].flatMap(el=>['aria-label','alt'].filter(a=>el.hasAttribute(a)&&I18N[i18nKey(el.getAttribute(a))]).map(a=>({el,a,en:el.getAttribute(a)})));
+  const metaDesc=document.querySelector('meta[name="description"]');
+  return function set(l,first){
+    if(!I18N_LANGS.includes(l))l='en';LANG=l;
+    document.documentElement.lang=l;
+    apply(nodes,l);
+    attrs.forEach(x=>x.el.setAttribute(x.a,l==='en'?x.en:(I18N[i18nKey(x.en)][l]||x.en)));
+    if(heroH1){heroH1.innerHTML=heroSrc;apply(collect(heroH1),l);splitHeroTitle(heroH1);}
+    document.title=I18N_META[l].title;if(metaDesc)metaDesc.content=I18N_META[l].desc;
+    document.querySelectorAll('.lang').forEach(d=>{
+      d.querySelector('.lang-cur').textContent=l.toUpperCase();
+      d.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-selected',b.dataset.lang===l));
+    });
+    const burger=document.getElementById('burger');
+    if(burger)burger.setAttribute('aria-label',t(document.body.classList.contains('menu-open')?'Close menu':'Open menu'));
+    if(!first)try{localStorage.setItem('gengo-lang',l);}catch(e){}
+    document.documentElement.classList.remove('i18n-wait');
+    document.dispatchEvent(new CustomEvent('langchange',{detail:l}));
+  };
+})();
+(function(){
+  let saved=null;
+  try{saved=new URLSearchParams(location.search).get('lang')||localStorage.getItem('gengo-lang');}catch(e){}
+  i18n(saved||'en',true);
+  // дропдауны (в шапке и в футере)
+  const dds=[...document.querySelectorAll('.lang')];
+  const close=(except)=>dds.forEach(d=>{if(d!==except){d.classList.remove('open');d.querySelector('.lang-btn').setAttribute('aria-expanded','false');}});
+  dds.forEach(d=>{
+    const btn=d.querySelector('.lang-btn');
+    btn.addEventListener('click',e=>{e.stopPropagation();const open=!d.classList.contains('open');close(d);d.classList.toggle('open',open);btn.setAttribute('aria-expanded',open);
+      if(open)(d.querySelector('[aria-selected="true"]')||d.querySelector('[data-lang]')).focus({preventScroll:true});});
+    d.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{i18n(b.dataset.lang);close();btn.focus({preventScroll:true});}));
+    d.addEventListener('keydown',e=>{
+      const items=[...d.querySelectorAll('[data-lang]')],i=items.indexOf(document.activeElement);
+      if(e.key==='Escape'){close();btn.focus();}
+      else if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();if(!d.classList.contains('open'))btn.click();else items[(i+(e.key==='ArrowDown'?1:-1)+items.length)%items.length].focus();}
+    });
+  });
+  document.addEventListener('click',e=>{if(!e.target.closest('.lang'))close();});
 })();
 
 // ===== nav: состояние при скролле + мобильное меню =====
@@ -842,7 +941,7 @@ const finePointer=matchMedia('(hover: hover) and (pointer: fine)').matches;
   const set=open=>{
     body.classList.toggle('menu-open',open);
     burger.setAttribute('aria-expanded',open);
-    burger.setAttribute('aria-label',open?'Закрыть меню':'Открыть меню');
+    burger.setAttribute('aria-label',t(open?'Close menu':'Open menu'));
     menu.setAttribute('aria-hidden',!open);
   };
   burger.addEventListener('click',()=>set(!body.classList.contains('menu-open')));
